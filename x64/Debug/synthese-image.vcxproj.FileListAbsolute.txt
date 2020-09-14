@@ -1,0 +1,2 @@
+D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.exe
+D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.pdb

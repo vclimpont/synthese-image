@@ -1,0 +1,25 @@
+﻿  lodepng.cpp
+D:\SyntheseImage\synthese-image\lodepng.cpp(716,59): warning C4334: '<<' : résultat du décalage 32 bits converti implicitement en 64 bits (le décalage 64 bits est-il intentionnel ?)
+D:\SyntheseImage\synthese-image\lodepng.cpp(734,39): warning C4267: '=' : conversion de 'size_t' en 'unsigned short', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(735,43): warning C4334: '<<' : résultat du décalage 32 bits converti implicitement en 64 bits (le décalage 64 bits est-il intentionnel ?)
+D:\SyntheseImage\synthese-image\lodepng.cpp(758,45): warning C4267: '=' : conversion de 'size_t' en 'unsigned short', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(776,46): warning C4267: '=' : conversion de 'size_t' en 'unsigned short', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(3796,84): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(4768,35): warning C4267: '=' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5016,66): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5022,89): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5023,101): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5024,89): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5025,101): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5026,89): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5027,101): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5028,84): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5213,5): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5237,13): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5273,66): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5290,5): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5312,61): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5343,61): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5459,61): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+D:\SyntheseImage\synthese-image\lodepng.cpp(5540,35): warning C4334: '<<' : résultat du décalage 32 bits converti implicitement en 64 bits (le décalage 64 bits est-il intentionnel ?)
+  synthese-image.vcxproj -> D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.exe
