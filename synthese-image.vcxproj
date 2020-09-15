@@ -142,11 +142,13 @@
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="raytracing.cpp" />
+    <ClCompile Include="sphere.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="vector3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

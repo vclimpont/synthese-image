@@ -1,14 +1,15 @@
 #include "ray.cpp"
+#include "sphere.cpp"
 #include "lodepng.h"
 #include <iostream>
 using namespace std;
 
-float hit_sphere(Ray ray, Vector3 center, float radius)
+float hit_sphere(Ray ray, Sphere sphere)
 {
-    Vector3 oc = ray.GetPosition() - center;
+    Vector3 oc = ray.GetPosition() - sphere.GetCenter();
     float a = Vector3::dot(ray.GetDirection(), ray.GetDirection());
     float b = 2.0 * Vector3::dot(oc, ray.GetDirection());
-    float c = Vector3::dot(oc, oc) - radius * radius;
+    float c = Vector3::dot(oc, oc) - sphere.GetRadius() * sphere.GetRadius();
     float discriminant = b * b - 4 * a * c;
     if (discriminant < 0) {
         return -1.0;
@@ -45,8 +46,9 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
-    Vector3 center = Vector3(250, 250, 50);
-    float radius = 50.0f;
+    Sphere s1 = Sphere(Vector3(250, 250, 50), 50.0f);
+    Sphere s2 = Sphere(Vector3(150, 50, 50), 25.0f);
+    Vector3 light = Vector3(50, 50, 10);
 
     const char* filename = "test.png";
 
@@ -58,14 +60,15 @@ int main()
     for (unsigned y = 0; y < height; y++)
         for (unsigned x = 0; x < width; x++) {
             
-            float n = hit_sphere(Ray(Vector3(x, y, 0), dirRay), center, radius);
+            float n1 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), s1);
+            float n2 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), s2);
 
-            if (n >= 0)
+            if (n1 >= 0 || n2 >= 0)
             {
-                image[4 * width * y + 4 * x + 0] = n;
-                image[4 * width * y + 4 * x + 1] = n;
-                image[4 * width * y + 4 * x + 2] = n;
-                image[4 * width * y + 4 * x + 3] = n;
+                image[4 * width * y + 4 * x + 0] = 255;
+                image[4 * width * y + 4 * x + 1] = 255;
+                image[4 * width * y + 4 * x + 2] = 255;
+                image[4 * width * y + 4 * x + 3] = 255;
             }
             else
             {

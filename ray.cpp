@@ -1,4 +1,4 @@
-#include "vector3.cpp"
+#include "vector3.h"
 #include <iostream>
 
 using namespace std;
