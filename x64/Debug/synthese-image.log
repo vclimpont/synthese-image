@@ -6,8 +6,11 @@ D:\SyntheseImage\synthese-image\raytracing.cpp(85,54): warning C4244: 'argument'
 D:\SyntheseImage\synthese-image\raytracing.cpp(85,51): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
 D:\SyntheseImage\synthese-image\raytracing.cpp(95,52): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
 D:\SyntheseImage\synthese-image\raytracing.cpp(95,49): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(113,110): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(113,92): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(113,74): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(115,113): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(115,90): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(115,67): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(118,66): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(118,61): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(118,56): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
 D:\SyntheseImage\synthese-image\vector3.h(57): warning C4715: 'Vector3::normalize' : les chemins de contrôle ne retournent pas tous une valeur
   synthese-image.vcxproj -> D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.exe

@@ -61,8 +61,8 @@ int main()
     Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
     const int nbSphere = 5;
     Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5};
-    Vector3 l1 = Vector3(50, 50, 50);
-    Vector3 l2 = Vector3(500, 50, 50);
+    Vector3 l1 = Vector3(50, 50, 100);
+    Vector3 l2 = Vector3(500, 50, 100);
     const int nbLights = 2;
     Vector3 lights[nbLights]{ l1, l2};
     Vector3 colors[nbLights]{ Vector3(39,255,245) , Vector3(136,255,10)};
@@ -86,7 +86,7 @@ int main()
 
                 if (n1 >= 0) // if ray hits a sphere
                 {
-                    ChangeColor(image, index, 0, 0, 0, 255); // make it black
+                    ChangeColor(image, index, 255, 255, 255, 255); // make it white
 
                     for (int j = 0; j < nbSphere; j++)
                     {
@@ -101,17 +101,26 @@ int main()
 
                             float n2 = hit_sphere(ray, spheres[j]);
 
+                            Vector3 c = colors[k];
 
-                            if (n2 >= 0 && n2 < length)
+                            if (n2 >= 0 && n2 < length) // if it can't reach the light
                             {
-                                //ChangeColor(image, index, 0, 0, 0, 255);
-                                    Vector3 col = Vector3(image[index],
-                                        image[index + 1],
-                                        image[index + 2]);
-
-                                    Vector3 l = (col + colors[k]);
-                                    ChangeColor(image, index, l.x / 1000 * 255, l.y / 1000 * 255, l.z / 1000 * 255, 255);
+                                //if (image[index] == 255 && image[index + 1] == 255 && image[index + 2] == 255)
+                                //{
+                                    c = Vector3(0, 0, 0);
+                                    //ChangeColor(image, index, c.x, c.y, c.z, 255);
+                                //}
                             }
+
+                            Vector3 col = Vector3((int)image[index], (int)image[index + 1], (int)image[index + 2]);
+
+                            Vector3 l = ((col + c) / 510.0f) * 255.0f;
+                            ChangeColor(image, index, l.x, l.y, l.z, 255);
+                        }
+
+                        if ((int)image[index] == 255 && (int)image[index + 1] == 255 && (int)image[index + 2] == 255)
+                        {
+                            ChangeColor(image, index, 0, 0, 0, 255);
                         }
                     }
                 }
