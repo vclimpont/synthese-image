@@ -47,5 +47,5 @@
 		return vector;
 	}
 	Vector3 Vector3::operator*(const Vector3 v) {
-		return this->cross(v);
+		return Vector3(this->x * v.x, this->y * v.y, this->z * v.z);
 	}
