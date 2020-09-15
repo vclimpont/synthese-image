@@ -54,9 +54,14 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
-    Sphere s1 = Sphere(Vector3(400, 400, 50), 50.0f);
-    Sphere s2 = Sphere(Vector3(200, 200, 25), 10.0f);
-    Vector3 light = Vector3(100, 100, 12.5f);
+    Sphere s1 = Sphere(Vector3(375, 310, 100), 50.0f);
+    Sphere s2 = Sphere(Vector3(150, 175, 35), 30.0f);
+    Sphere s3 = Sphere(Vector3(265, 128, 50), 30.0f);
+    Sphere s4 = Sphere(Vector3(80, 152, 75), 10.0f);
+    Sphere s5 = Sphere(Vector3(210, 375, 10), 75.0f);
+    const int nbSphere = 4;
+    Sphere spheres[nbSphere]{ s1, s3, s4, s5};
+    Vector3 light = Vector3(50, 50, 200);
 
     const char* filename = "test.png";
 
@@ -69,31 +74,34 @@ int main()
         for (unsigned x = 0; x < width; x++) {
             
             int index = 4 * width * y + 4 * x;
-            float n1 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), s1);
-            //float n2 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), s2);
-
-            if (n1 >= 0)
+            ChangeColor(image, index, 255, 0, 0, 255);
+           
+            for (int i = 0; i < nbSphere; i++)
             {
-                Vector3 p = Vector3(x, y, n1);
-                Vector3 dir = light - p;
-                dir = Vector3::normalize(dir);
-                p = p + dir * 0.01f;
-                Ray ray = Ray(p, dir);
-                
-                float n2 = hit_sphere(ray, s1);
-                
-                if (n2 < 0)
+                float n1 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), spheres[i]);
+
+                if (n1 >= 0)
                 {
                     ChangeColor(image, index, 255, 255, 255, 255);
+
+                    for (int j = 0; j < nbSphere; j++)
+                    {
+                        Vector3 p = Vector3(x, y, n1);
+                        Vector3 dir = light - p;
+                        float length = dir.length();
+                        dir = Vector3::normalize(dir);
+                        p = p + dir * 0.01f;
+                        Ray ray = Ray(p, dir);
+                
+                        float n2 = hit_sphere(ray, spheres[j]);
+
+
+                        if(n2 >= 0 && n2 < length)
+                        {
+                            ChangeColor(image, index, 0, 0, 0, 255);
+                        }
+                    }
                 }
-                else
-                {
-                    ChangeColor(image, index, 0, 0, 0, 255);
-                }
-            }
-            else
-            {
-                ChangeColor(image, index, 255, 0, 0, 255);
             }
         }
 
