@@ -55,13 +55,17 @@ int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
     Sphere s1 = Sphere(Vector3(375, 310, 100), 50.0f);
-    Sphere s2 = Sphere(Vector3(150, 175, 35), 30.0f);
-    Sphere s3 = Sphere(Vector3(265, 128, 50), 30.0f);
-    Sphere s4 = Sphere(Vector3(80, 152, 75), 10.0f);
-    Sphere s5 = Sphere(Vector3(210, 375, 10), 75.0f);
-    const int nbSphere = 4;
-    Sphere spheres[nbSphere]{ s1, s3, s4, s5};
-    Vector3 light = Vector3(50, 50, 200);
+    Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
+    Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
+    Sphere s4 = Sphere(Vector3(80, 152, 100), 10.0f);
+    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
+    const int nbSphere = 5;
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5};
+    Vector3 l1 = Vector3(50, 50, 50);
+    Vector3 l2 = Vector3(500, 50, 50);
+    const int nbLights = 2;
+    Vector3 lights[nbLights]{ l1, l2};
+    Vector3 colors[nbLights]{ Vector3(39,255,245) , Vector3(136,255,10)};
 
     const char* filename = "test.png";
 
@@ -80,25 +84,34 @@ int main()
             {
                 float n1 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), spheres[i]);
 
-                if (n1 >= 0)
+                if (n1 >= 0) // if ray hits a sphere
                 {
-                    ChangeColor(image, index, 255, 255, 255, 255);
+                    ChangeColor(image, index, 0, 0, 0, 255); // make it black
 
                     for (int j = 0; j < nbSphere; j++)
                     {
-                        Vector3 p = Vector3(x, y, n1);
-                        Vector3 dir = light - p;
-                        float length = dir.length();
-                        dir = Vector3::normalize(dir);
-                        p = p + dir * 0.01f;
-                        Ray ray = Ray(p, dir);
-                
-                        float n2 = hit_sphere(ray, spheres[j]);
-
-
-                        if(n2 >= 0 && n2 < length)
+                        for (int k = 0; k < nbLights; k++)
                         {
-                            ChangeColor(image, index, 0, 0, 0, 255);
+                            Vector3 p = Vector3(x, y, n1);
+                            Vector3 dir = lights[k] - p;
+                            float length = dir.length();
+                            dir = Vector3::normalize(dir);
+                            p = p + dir * 0.01f;
+                            Ray ray = Ray(p, dir);
+
+                            float n2 = hit_sphere(ray, spheres[j]);
+
+
+                            if (n2 >= 0 && n2 < length)
+                            {
+                                //ChangeColor(image, index, 0, 0, 0, 255);
+                                    Vector3 col = Vector3(image[index],
+                                        image[index + 1],
+                                        image[index + 2]);
+
+                                    Vector3 l = (col + colors[k]);
+                                    ChangeColor(image, index, l.x / 1000 * 255, l.y / 1000 * 255, l.z / 1000 * 255, 255);
+                            }
                         }
                     }
                 }
