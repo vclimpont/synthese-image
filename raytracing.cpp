@@ -47,7 +47,7 @@ int main()
     Vector3 dirPoint = Vector3(0, 0, 0);
     Vector3 dirRay = Vector3(0, 0, 1);
     Vector3 center = Vector3(250, 250, 50);
-    float radius = 100.0f;
+    float radius = 50.0f;
 
     const char* filename = "test.png";
 

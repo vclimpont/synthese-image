@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="ray.cpp" />
     <ClCompile Include="raytracing.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="vector3.cpp" />
