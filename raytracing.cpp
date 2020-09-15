@@ -1,13 +1,13 @@
-#include "vector3.cpp"
+#include "ray.cpp"
 #include "lodepng.h"
 #include <iostream>
 using namespace std;
 
-float hit_sphere(Vector3 dirPoint, Vector3 dirRay, Vector3 center, float radius)
+float hit_sphere(Ray ray, Vector3 center, float radius)
 {
-    Vector3 oc = dirPoint - center;
-    float a = Vector3::dot(dirRay, dirRay);
-    float b = 2.0 * Vector3::dot(oc, dirRay);
+    Vector3 oc = ray.GetPosition() - center;
+    float a = Vector3::dot(ray.GetDirection(), ray.GetDirection());
+    float b = 2.0 * Vector3::dot(oc, ray.GetDirection());
     float c = Vector3::dot(oc, oc) - radius * radius;
     float discriminant = b * b - 4 * a * c;
     if (discriminant < 0) {
@@ -44,7 +44,6 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 int main()
 {
-    Vector3 dirPoint = Vector3(0, 0, 0);
     Vector3 dirRay = Vector3(0, 0, 1);
     Vector3 center = Vector3(250, 250, 50);
     float radius = 50.0f;
@@ -59,7 +58,7 @@ int main()
     for (unsigned y = 0; y < height; y++)
         for (unsigned x = 0; x < width; x++) {
             
-            float n = hit_sphere(Vector3(x, y, 0), dirRay, center, radius);
+            float n = hit_sphere(Ray(Vector3(x, y, 0), dirRay), center, radius);
 
             if (n >= 0)
             {

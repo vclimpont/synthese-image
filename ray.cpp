@@ -10,7 +10,7 @@ public:
 
 	Ray(Vector3 _position, Vector3 _direction) {
 		position = _position;
-		direction = _position;
+		direction = _direction;
 	}
 
 	void SetPosition(Vector3 _position)
