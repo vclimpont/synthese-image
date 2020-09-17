@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include "ray.cpp"
 #include "sphere.cpp"
 #include "Light.cpp"
@@ -41,6 +42,11 @@ void ChangeColor(std::vector<unsigned char>& image, int index, int r, int g, int
     image[index + 3] = a;
 }
 
+void CalculateColor(Light l)
+{
+
+}
+
 //Encode from raw pixels to disk with a single function call
 //The image argument has width * height RGBA pixels or width * height * 4 bytes
 void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height) {
@@ -57,7 +63,7 @@ int main()
     Vector3 dirRay = Vector3(0, 0, 1);
 
     const int nbSphere = 5;
-    Sphere s1 = Sphere(Vector3(400, 400, 100), 50.0f);
+    Sphere s1 = Sphere(Vector3(250, 250, 100), 10.0f);
     Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
     Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
     Sphere s4 = Sphere(Vector3(80, 152, 100), 10.0f);
@@ -66,8 +72,8 @@ int main()
 
 
     const int nbLights = 2;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(0, 255, 0));
-    Light l2 = Light(Vector3(512, 0, 100), Vector3(0, 0, 255));
+    Light l1 = Light(Vector3(0, 0, 50), Vector3(1, 255, 1), 300000.0f);
+    Light l2 = Light(Vector3(512, 0, 200), Vector3(1, 1, 255), 500000.0f);
     Light lights[nbLights]{ l1, l2};
 
     const char* filename = "test.png";
@@ -81,7 +87,7 @@ int main()
         for (unsigned x = 0; x < width; x++) {
             
             int index = 4 * width * y + 4 * x;
-            ChangeColor(image, index, 255, 0, 0, 255);
+            ChangeColor(image, index, 255, 1, 1, 255);
            
             for (int i = 0; i < nbSphere; i++)
             {
@@ -89,7 +95,7 @@ int main()
 
                 if (n1 >= 0) // if ray hits a sphere
                 {
-                    ChangeColor(image, index, 0, 0, 0, 255); // make it black
+                    ChangeColor(image, index, 1, 1, 1, 255); // make it black
 
                     for (int k = 0; k < nbLights; k++)
                     {
@@ -97,15 +103,15 @@ int main()
                         int j = 0;
                         Vector3 c = lights[k].GetColor();
 
+                        Vector3 p = Vector3(x, y, n1);  // intersect point with the sphere n1
+                        Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
+                        float length = dir.length();
+                        dir = Vector3::normalize(dir);
+                        p = p + dir * 0.01f;
+                        Ray ray = Ray(p, dir);
+
                         while (j < nbSphere && hitLight == true)
                         {
-                            Vector3 p = Vector3(x, y, n1);  // intersect point with the sphere n1
-                            Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
-                            float length = dir.length();
-                            dir = Vector3::normalize(dir);
-                            p = p + dir * 0.01f;
-                            Ray ray = Ray(p, dir);
-
                             float n2 = hit_sphere(ray, spheres[j]); // try to hit another sphere
 
                             if (n2 >= 0 && n2 < length) // if it hits the sphere and so it can't reach the light
@@ -121,7 +127,14 @@ int main()
                         {
                             Vector3 col = Vector3((int)image[index], (int)image[index + 1], (int)image[index + 2]); // get the current color
 
-                            Vector3 l = ((col + c) / 510.0f) * 255.0f; // add the light color and intensity to the current color
+                            Vector3 norm = p - spheres[i].GetCenter();
+                            norm = Vector3::normalize(norm);
+                            float theta = Vector3::dot(norm, dir);
+                            float angle = cos(abs(theta));
+
+                            //Vector3 l = ((col + c) / 510.0f) * 255.0f; // add the light color and intensity to the current color
+                            Vector3 l = (c * lights[k].GetIntensity() * angle * col) / (length * length * M_PI); // add the light color and intensity to the current color
+                            //std::cout << angle << " " << length << " " << l << " " << (c * angle * col * 1000) << " " << (length * length * M_PI);
                             ChangeColor(image, index, l.x, l.y, l.z, 255);
                         }
                     }
