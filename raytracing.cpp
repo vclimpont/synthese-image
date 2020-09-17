@@ -42,9 +42,44 @@ void ChangeColor(std::vector<unsigned char>& image, int index, int r, int g, int
     image[index + 3] = a;
 }
 
-void CalculateColor(Light l)
+float GetMaxIntensity(Light lights[], int nbLights)
 {
+    float max = 0.0f;
 
+    for (int i = 0; i < nbLights; i++)
+    {
+        float intens = lights[i].GetIntensity();
+        if (intens > max)
+        {
+            max = intens;
+        }
+    }
+
+    return max;
+}
+
+Vector3 ClampColor(Vector3 color, float max)
+{
+    Vector3 clampedColor = (color / (255 * max)) * 255;
+
+    return clampedColor;
+}
+
+Vector3 ClampColor(Vector3 color)
+{
+    Vector3 clampedColor = color;
+    clampedColor.x = clampedColor.x > 255 ? 255 : clampedColor.x;
+    clampedColor.y = clampedColor.y > 255 ? 255 : clampedColor.y;
+    clampedColor.z = clampedColor.z > 255 ? 255 : clampedColor.z;
+
+    return clampedColor;
+}
+
+Vector3 CalculateColor(Light l, float angle, Vector3 surfaceColor, float length)
+{
+    Vector3 color = (l.GetColor() * l.GetIntensity() * angle * surfaceColor) / (length * length * M_PI);
+
+    return color;
 }
 
 //Encode from raw pixels to disk with a single function call
@@ -72,9 +107,11 @@ int main()
 
 
     const int nbLights = 2;
-    Light l1 = Light(Vector3(0, 0, 50), Vector3(1, 255, 1), 300000.0f);
+    Light l1 = Light(Vector3(0, 0, 50), Vector3(1, 255, 1), 250000.0f);
     Light l2 = Light(Vector3(512, 0, 200), Vector3(1, 1, 255), 500000.0f);
     Light lights[nbLights]{ l1, l2};
+
+    float maxIntensity = GetMaxIntensity(lights, nbLights);
 
     const char* filename = "test.png";
 
@@ -120,7 +157,6 @@ int main()
                             }
 
                             j++;
-                            //std::cout << p << " " << hitlight << " " << k <<  " " << j << " |||| ";
                         }
 
                         if (hitLight == true)
@@ -133,7 +169,7 @@ int main()
                             float angle = cos(abs(theta));
 
                             //Vector3 l = ((col + c) / 510.0f) * 255.0f; // add the light color and intensity to the current color
-                            Vector3 l = (c * lights[k].GetIntensity() * angle * col) / (length * length * M_PI); // add the light color and intensity to the current color
+                            Vector3 l = ClampColor(CalculateColor(lights[k], angle, col, length)); // add the light color and intensity to the current color
                             //std::cout << angle << " " << length << " " << l << " " << (c * angle * col * 1000) << " " << (length * length * M_PI);
                             ChangeColor(image, index, l.x, l.y, l.z, 255);
                         }
