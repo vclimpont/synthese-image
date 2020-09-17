@@ -1,5 +1,6 @@
 #include "ray.cpp"
 #include "sphere.cpp"
+#include "Light.cpp"
 #include "lodepng.h"
 #include <iostream>
 using namespace std;
@@ -54,18 +55,20 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
+
+    const int nbSphere = 5;
     Sphere s1 = Sphere(Vector3(400, 400, 100), 50.0f);
     Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
     Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
     Sphere s4 = Sphere(Vector3(80, 152, 100), 10.0f);
     Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
-    const int nbSphere = 5;
     Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5 };
-    Vector3 l1 = Vector3(0, 0, 100);
-    Vector3 l2 = Vector3(512, 0, 100);
+
+
     const int nbLights = 2;
-    Vector3 lights[nbLights]{ l1, l2};
-    Vector3 colors[nbLights]{ Vector3(0, 255, 0) , Vector3(0, 0, 255)};
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(0, 255, 0));
+    Light l2 = Light(Vector3(512, 0, 100), Vector3(0, 0, 255));
+    Light lights[nbLights]{ l1, l2};
 
     const char* filename = "test.png";
 
@@ -92,12 +95,12 @@ int main()
                     {
                         bool hitLight = true;
                         int j = 0;
-                        Vector3 c = colors[k];
+                        Vector3 c = lights[k].GetColor();
 
                         while (j < nbSphere && hitLight == true)
                         {
                             Vector3 p = Vector3(x, y, n1);  // intersect point with the sphere n1
-                            Vector3 dir = lights[k] - p;    // direction vector towards 
+                            Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
                             float length = dir.length();
                             dir = Vector3::normalize(dir);
                             p = p + dir * 0.01f;

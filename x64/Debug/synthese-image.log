@@ -1,16 +1,18 @@
-﻿  raytracing.cpp
-D:\SyntheseImage\synthese-image\raytracing.cpp(11,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(21,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(27,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(85,54): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(85,51): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(99,52): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(99,49): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(119,113): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(119,90): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(119,67): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(122,66): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(122,61): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(122,56): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+﻿  Light.cpp
+  raytracing.cpp
+D:\SyntheseImage\synthese-image\raytracing.cpp(12,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(22,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(28,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(88,54): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(88,51): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(102,52): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(102,49): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(122,113): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(122,90): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(122,67): warning C4244: 'argument' : conversion de 'int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(125,66): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(125,61): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(125,56): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+  Génération de code en cours...
 D:\SyntheseImage\synthese-image\vector3.h(57): warning C4715: 'Vector3::normalize' : les chemins de contrôle ne retournent pas tous une valeur
   synthese-image.vcxproj -> D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.exe
