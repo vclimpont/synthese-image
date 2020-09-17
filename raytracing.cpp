@@ -55,14 +55,14 @@ int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
     Sphere s1 = Sphere(Vector3(400, 400, 100), 50.0f);
-    //Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
-   /* Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
+    Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
+    Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
     Sphere s4 = Sphere(Vector3(80, 152, 100), 10.0f);
-    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);*/
-    const int nbSphere = 1;
-    Sphere spheres[nbSphere]{ s1 };
-    Vector3 l1 = Vector3(50, 50, 100);
-    Vector3 l2 = Vector3(500, 50, 100);
+    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
+    const int nbSphere = 5;
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5 };
+    Vector3 l1 = Vector3(0, 0, 100);
+    Vector3 l2 = Vector3(512, 0, 100);
     const int nbLights = 2;
     Vector3 lights[nbLights]{ l1, l2};
     Vector3 colors[nbLights]{ Vector3(0, 255, 0) , Vector3(0, 0, 255)};
@@ -86,41 +86,40 @@ int main()
 
                 if (n1 >= 0) // if ray hits a sphere
                 {
-                    ChangeColor(image, index, 255, 255, 255, 255); // make it white
+                    ChangeColor(image, index, 0, 0, 0, 255); // make it black
 
-                    for (int j = 0; j < nbSphere; j++)
+                    for (int k = 0; k < nbLights; k++)
                     {
-                        for (int k = 0; k < nbLights; k++)
+                        bool hitLight = true;
+                        int j = 0;
+                        Vector3 c = colors[k];
+
+                        while (j < nbSphere && hitLight == true)
                         {
-                            Vector3 p = Vector3(x, y, n1);
-                            Vector3 dir = lights[k] - p;
+                            Vector3 p = Vector3(x, y, n1);  // intersect point with the sphere n1
+                            Vector3 dir = lights[k] - p;    // direction vector towards 
                             float length = dir.length();
                             dir = Vector3::normalize(dir);
                             p = p + dir * 0.01f;
                             Ray ray = Ray(p, dir);
 
-                            float n2 = hit_sphere(ray, spheres[j]);
+                            float n2 = hit_sphere(ray, spheres[j]); // try to hit another sphere
 
-                            Vector3 c = colors[k];
-
-                            if (n2 >= 0 && n2 < length) // if it can't reach the light
+                            if (n2 >= 0 && n2 < length) // if it hits the sphere and so it can't reach the light
                             {
-                                //if (image[index] == 255 && image[index + 1] == 255 && image[index + 2] == 255)
-                                //{
-                                    c = Vector3(0, 0, 0);
-                                    //ChangeColor(image, index, c.x, c.y, c.z, 255);
-                                //}
+                                hitLight = false;
                             }
 
-                            Vector3 col = Vector3((int)image[index], (int)image[index + 1], (int)image[index + 2]);
-
-                            Vector3 l = ((col + c) / 510.0f) * 255.0f;
-                            ChangeColor(image, index, l.x, l.y, l.z, 255);
+                            j++;
+                            //std::cout << p << " " << hitlight << " " << k <<  " " << j << " |||| ";
                         }
 
-                        if ((int)image[index] == 255 && (int)image[index + 1] == 255 && (int)image[index + 2] == 255)
+                        if (hitLight == true)
                         {
-                            ChangeColor(image, index, 0, 0, 0, 255);
+                            Vector3 col = Vector3((int)image[index], (int)image[index + 1], (int)image[index + 2]); // get the current color
+
+                            Vector3 l = ((col + c) / 510.0f) * 255.0f; // add the light color and intensity to the current color
+                            ChangeColor(image, index, l.x, l.y, l.z, 255);
                         }
                     }
                 }
