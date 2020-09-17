@@ -54,18 +54,18 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
-    Sphere s1 = Sphere(Vector3(375, 310, 100), 50.0f);
-    Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
-    Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
+    Sphere s1 = Sphere(Vector3(400, 400, 100), 50.0f);
+    //Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
+   /* Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
     Sphere s4 = Sphere(Vector3(80, 152, 100), 10.0f);
-    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
-    const int nbSphere = 5;
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5};
+    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);*/
+    const int nbSphere = 1;
+    Sphere spheres[nbSphere]{ s1 };
     Vector3 l1 = Vector3(50, 50, 100);
     Vector3 l2 = Vector3(500, 50, 100);
     const int nbLights = 2;
     Vector3 lights[nbLights]{ l1, l2};
-    Vector3 colors[nbLights]{ Vector3(39,255,245) , Vector3(136,255,10)};
+    Vector3 colors[nbLights]{ Vector3(0, 255, 0) , Vector3(0, 0, 255)};
 
     const char* filename = "test.png";
 
@@ -82,7 +82,7 @@ int main()
            
             for (int i = 0; i < nbSphere; i++)
             {
-                float n1 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), spheres[i]);
+                float n1 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), spheres[i]); // try to hit a sphere
 
                 if (n1 >= 0) // if ray hits a sphere
                 {
