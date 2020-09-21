@@ -107,11 +107,11 @@ int main()
 
 
     const int nbLights = 2;
-    Light l1 = Light(Vector3(250, 250, 50), Vector3(255, 1, 1), 150000.0f);
-    Light l2 = Light(Vector3(512, 0, 100), Vector3(1, 1, 255), 150000.0f);
-    //Light l3 = Light(Vector3(0, 512, 120), Vector3(1, 255, 1), 150000.0f);
+    //Light l1 = Light(Vector3(250, 250, 50), Vector3(255, 1, 1), 150000.0f);
+    Light l2 = Light(Vector3(512, 0, 100), Vector3(1, 1, 255), 200000.0f);
+    Light l3 = Light(Vector3(0, 512, 120), Vector3(1, 255, 1), 250000.0f);
     //Light l4 = Light(Vector3(512, 512, 80), Vector3(255, 255, 1), 150000.0f);
-    Light lights[nbLights]{ l1, l2 };
+    Light lights[nbLights]{ l2, l3 };
 
     float maxIntensity = GetMaxIntensity(lights, nbLights);
 

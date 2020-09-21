@@ -1,2 +1,4 @@
 D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.exe
 D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.pdb
+C:\Users\valen\Documents\Visual Studio 2019\synthese-image\x64\Debug\synthese-image.exe
+C:\Users\valen\Documents\Visual Studio 2019\synthese-image\x64\Debug\synthese-image.pdb
