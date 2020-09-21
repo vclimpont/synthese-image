@@ -97,19 +97,21 @@ int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
 
-    const int nbSphere = 5;
-    Sphere s1 = Sphere(Vector3(250, 250, 100), 10.0f);
-    Sphere s2 = Sphere(Vector3(150, 175, 100), 30.0f);
-    Sphere s3 = Sphere(Vector3(265, 128, 100), 30.0f);
-    Sphere s4 = Sphere(Vector3(80, 152, 100), 10.0f);
-    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5 };
+    const int nbSphere = 4;
+    Sphere s1 = Sphere(Vector3(250, 100, 100), 50.0f);
+    Sphere s2 = Sphere(Vector3(100, 250, 80), 50.0f);
+    Sphere s3 = Sphere(Vector3(412, 250, 120), 50.0f);
+    Sphere s4 = Sphere(Vector3(250, 412, 100), 50.0f);
+   // Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4};
 
 
     const int nbLights = 2;
-    Light l1 = Light(Vector3(0, 0, 50), Vector3(1, 255, 1), 250000.0f);
-    Light l2 = Light(Vector3(512, 0, 200), Vector3(1, 1, 255), 500000.0f);
-    Light lights[nbLights]{ l1, l2};
+    Light l1 = Light(Vector3(250, 250, 50), Vector3(255, 1, 1), 150000.0f);
+    Light l2 = Light(Vector3(512, 0, 100), Vector3(1, 1, 255), 150000.0f);
+    //Light l3 = Light(Vector3(0, 512, 120), Vector3(1, 255, 1), 150000.0f);
+    //Light l4 = Light(Vector3(512, 512, 80), Vector3(255, 255, 1), 150000.0f);
+    Light lights[nbLights]{ l1, l2 };
 
     float maxIntensity = GetMaxIntensity(lights, nbLights);
 
@@ -124,7 +126,7 @@ int main()
         for (unsigned x = 0; x < width; x++) {
             
             int index = 4 * width * y + 4 * x;
-            ChangeColor(image, index, 255, 1, 1, 255);
+            ChangeColor(image, index, 1, 1, 1, 255);
            
             for (int i = 0; i < nbSphere; i++)
             {
@@ -166,11 +168,9 @@ int main()
                             Vector3 norm = p - spheres[i].GetCenter();
                             norm = Vector3::normalize(norm);
                             float theta = Vector3::dot(norm, dir);
-                            float angle = cos(abs(theta));
+                            float angle = abs(theta);
 
-                            //Vector3 l = ((col + c) / 510.0f) * 255.0f; // add the light color and intensity to the current color
                             Vector3 l = ClampColor(CalculateColor(lights[k], angle, col, length)); // add the light color and intensity to the current color
-                            //std::cout << angle << " " << length << " " << l << " " << (c * angle * col * 1000) << " " << (length * length * M_PI);
                             ChangeColor(image, index, l.x, l.y, l.z, 255);
                         }
                     }
