@@ -130,11 +130,11 @@ int main()
     Vector3 dirRay = Vector3(0, 0, 1);
 
     const int nbSphere = 4;
-    Sphere s1 = Sphere(Vector3(250, 100, 100), 50.0f);
-    Sphere s2 = Sphere(Vector3(100, 250, 80), 50.0f);
-    Sphere s3 = Sphere(Vector3(412, 250, 120), 50.0f);
-    Sphere s4 = Sphere(Vector3(250, 412, 100), 50.0f);
-    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f);
+    Sphere s1 = Sphere(Vector3(250, 100, 100), 50.0f, Vector3(1, 1, 1));
+    Sphere s2 = Sphere(Vector3(100, 250, 80), 50.0f, Vector3(1, 1, 1));
+    Sphere s3 = Sphere(Vector3(412, 250, 120), 50.0f, Vector3(1, 1, 1));
+    Sphere s4 = Sphere(Vector3(250, 412, 100), 50.0f, Vector3(1, 1, 1));
+    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f, Vector3(1, 1, 1));
     Sphere spheres[nbSphere]{ s1, s2, s3, s4};
 
     const int nbLights = 4;
@@ -158,6 +158,7 @@ int main()
 
             int index = 4 * width * y + 4 * x;
             Vector3 colSurface = Vector3(0, 0, 0);
+
 
             for (int i = 0; i < nbSphere; i++)
             {
@@ -185,6 +186,8 @@ int main()
                     }
 
                     //std::cout << colSurface << " ";
+
+                    colSurface = colSurface * spheres[i].GetAlbedo();
                 }
             }
 
