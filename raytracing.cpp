@@ -108,8 +108,8 @@ int main()
 
     const int nbLights = 2;
     //Light l1 = Light(Vector3(250, 250, 50), Vector3(255, 1, 1), 150000.0f);
-    Light l2 = Light(Vector3(512, 0, 100), Vector3(1, 1, 255), 200000.0f);
-    Light l3 = Light(Vector3(0, 512, 120), Vector3(1, 255, 1), 250000.0f);
+    Light l2 = Light(Vector3(512, 0, 100), Vector3(1, 1, 255), 400000.0f);
+    Light l3 = Light(Vector3(0, 512, 120), Vector3(1, 255, 1), 500000.0f);
     //Light l4 = Light(Vector3(512, 512, 80), Vector3(255, 255, 1), 150000.0f);
     Light lights[nbLights]{ l2, l3 };
 
@@ -140,7 +140,6 @@ int main()
                     {
                         bool hitLight = true;
                         int j = 0;
-                        Vector3 c = lights[k].GetColor();
 
                         Vector3 p = Vector3(x, y, n1);  // intersect point with the sphere n1
                         Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
@@ -167,8 +166,8 @@ int main()
 
                             Vector3 norm = p - spheres[i].GetCenter();
                             norm = Vector3::normalize(norm);
-                            float theta = Vector3::dot(norm, dir);
-                            float angle = abs(theta);
+                            float angle = Vector3::dot(norm, dir);
+                            angle = abs(angle);
 
                             Vector3 l = ClampColor(CalculateColor(lights[k], angle, col, length)); // add the light color and intensity to the current color
                             ChangeColor(image, index, l.x, l.y, l.z, 255);
