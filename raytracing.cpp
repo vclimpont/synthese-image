@@ -58,13 +58,6 @@ float GetMaxIntensity(Light lights[], int nbLights)
     return max;
 }
 
-Vector3 ClampColor(Vector3 color, float max)
-{
-    Vector3 clampedColor = (color / (255 * max)) * 255;
-
-    return clampedColor;
-}
-
 Vector3 ClampColor(Vector3 color)
 {
     Vector3 clampedColor = color;
@@ -142,19 +135,28 @@ float GetMinRayToSpheres(Ray ray, Sphere& sphere_i, Sphere spheres[], int nbSphe
 }
 
 
+Vector3 GetReflectDirection(Vector3 dirRay, Vector3 norm)
+{
+    Vector3 r = norm * Vector3::dot(dirRay * -1.0f, norm) * 2 + dirRay;
+    cout << dirRay << " " << r;
+    return r;
+}
+
+
 int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
 
-    const int nbSphere = 4;
-    Sphere s1 = Sphere(Vector3(200, 200, 100), 50.0f, Vector3(1, 1, 1));
-    Sphere s2 = Sphere(Vector3(250, 250, 200), 50.0f, Vector3(1, 1, 1));
-    Sphere s3 = Sphere(Vector3(200, 300, 300), 50.0f, Vector3(1, 1, 1));
-    Sphere s4 = Sphere(Vector3(300, 250, 450), 50.0f, Vector3(1, 1, 1));
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4 };
+    const int nbSphere = 5;
+    Sphere s1 = Sphere(Vector3(100, 256, 100), 50.0f, Vector3(1, 1, 1), true);
+    Sphere s2 = Sphere(Vector3(256, 100, 100), 50.0f, Vector3(1, 1, 1), true);
+    Sphere s3 = Sphere(Vector3(412, 256, 100), 50.0f, Vector3(1, 1, 1), true);
+    Sphere s4 = Sphere(Vector3(256, 412, 100), 50.0f, Vector3(1, 1, 1), true);
+    Sphere s5 = Sphere(Vector3(256, 256, 300), 100.0f, Vector3(1, 1, 1), false);
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5 };
 
     const int nbLights = 4;
-    Light l1 = Light(Vector3(0, 0, 50), Vector3(1, 0, 0), 50000000.0f);
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 0, 0), 50000000.0f);
     Light l2 = Light(Vector3(512, 0, 100), Vector3(0, 0, 1), 40000000.0f);
     Light l3 = Light(Vector3(0, 512, 120), Vector3(0, 1, 0), 50000000.0f);
     Light l4 = Light(Vector3(512, 512, 80), Vector3(1, 1, 0), 40000000.0f);
@@ -176,7 +178,7 @@ int main()
             Vector3 colSurface = Vector3(0, 0, 0);
 
             Ray rayToSphere = Ray(Vector3(x, y, 0), dirRay);
-            Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0));
+            Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
             float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres, nbSphere);
 
                 if (n1 != INFINITY)
