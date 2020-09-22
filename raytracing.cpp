@@ -149,12 +149,13 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
 
     if (n1 != INFINITY)
     {
-        for (int k = 0; k < nbLights; k++)
+        Vector3 rayPoint = rayToSphere.GetPosition();
+        Vector3 intersectPoint = Vector3(rayPoint.x, rayPoint.y, n1);
+        if (sphere_i.GetDiffuse() == true)
         {
-            if (sphere_i.GetDiffuse() == true)
+            for (int k = 0; k < nbLights; k++)
             {
-                Vector3 rayPoint = rayToSphere.GetPosition();
-                Vector3 p = Vector3(rayPoint.x, rayPoint.y, n1);
+                Vector3 p = intersectPoint;
                 Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
                 float length = dir.length();
                 dir = Vector3::normalize(dir);
@@ -171,7 +172,15 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
                     colSurface = colSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
                 }
             }
+        }
+        else
+        {
+            //Vector3 norm = p - sphere_i.GetCenter();
+            //norm = Vector3::normalize(norm);
+            //Vector3 r = GetReflectDirection(ray.GetDirection(), norm);
+            //Ray ray = Ray(p, r);
 
+            //GetLightIntensityOnSurface(colSurface, ray, spheres, nbSphere, lights, nbLights);
         }
 
         //std::cout << colSurface << " ";
