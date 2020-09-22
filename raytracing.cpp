@@ -93,9 +93,9 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
     if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 }
 
-float CastRayToSphere(int x, int y, Vector3 dirRay, Sphere s)
+float CastRayToSphere(Ray ray, Sphere s)
 {
-    float n1 = hit_sphere(Ray(Vector3(x, y, 0), dirRay), s); // try to hit a sphere
+    float n1 = hit_sphere(ray, s); // try to hit a sphere
 
     if (n1 >= 0) // if ray hits a sphere
     {
@@ -124,24 +124,40 @@ bool CastRayToLight(Ray ray, float lengthToLight, Sphere spheres[], int nbSphere
     return true;
 }
 
+float GetMinRayToSpheres(Ray ray, Sphere& sphere_i, Sphere spheres[], int nbSphere)
+{
+    float rayDistMin = INFINITY;
+
+    for (int i = 0; i < nbSphere; i++)
+    {
+        float rayDist = CastRayToSphere(ray, spheres[i]);
+        if (rayDist != -1 && rayDist < rayDistMin )
+        {
+            rayDistMin = rayDist;
+            sphere_i = spheres[i];
+        }
+    }
+    
+    return rayDistMin;
+}
+
 
 int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
 
     const int nbSphere = 4;
-    Sphere s1 = Sphere(Vector3(250, 100, 100), 50.0f, Vector3(1, 1, 1));
-    Sphere s2 = Sphere(Vector3(100, 250, 80), 50.0f, Vector3(1, 1, 1));
-    Sphere s3 = Sphere(Vector3(412, 250, 120), 50.0f, Vector3(1, 1, 1));
-    Sphere s4 = Sphere(Vector3(250, 412, 100), 50.0f, Vector3(1, 1, 1));
-    Sphere s5 = Sphere(Vector3(210, 375, 100), 75.0f, Vector3(1, 1, 1));
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4};
+    Sphere s1 = Sphere(Vector3(200, 200, 100), 50.0f, Vector3(1, 1, 1));
+    Sphere s2 = Sphere(Vector3(250, 250, 200), 50.0f, Vector3(1, 1, 1));
+    Sphere s3 = Sphere(Vector3(200, 300, 300), 50.0f, Vector3(1, 1, 1));
+    Sphere s4 = Sphere(Vector3(300, 250, 450), 50.0f, Vector3(1, 1, 1));
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4 };
 
     const int nbLights = 4;
-    Light l1 = Light(Vector3(250, 250, 50), Vector3(1, 0, 0), 15000000.0f);
+    Light l1 = Light(Vector3(0, 0, 50), Vector3(1, 0, 0), 50000000.0f);
     Light l2 = Light(Vector3(512, 0, 100), Vector3(0, 0, 1), 40000000.0f);
     Light l3 = Light(Vector3(0, 512, 120), Vector3(0, 1, 0), 50000000.0f);
-    Light l4 = Light(Vector3(512, 512, 80), Vector3(1, 1, 0), 30000000.0f);
+    Light l4 = Light(Vector3(512, 512, 80), Vector3(1, 1, 0), 40000000.0f);
     Light lights[nbLights]{ l1, l2, l3, l4 };
 
     float maxIntensity = GetMaxIntensity(lights, nbLights);
@@ -159,11 +175,11 @@ int main()
             int index = 4 * width * y + 4 * x;
             Vector3 colSurface = Vector3(0, 0, 0);
 
+            Ray rayToSphere = Ray(Vector3(x, y, 0), dirRay);
+            Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0));
+            float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres, nbSphere);
 
-            for (int i = 0; i < nbSphere; i++)
-            {
-                float n1 = CastRayToSphere(x, y, dirRay, spheres[i]);
-                if (n1 != -1)
+                if (n1 != INFINITY)
                 {
                     for (int k = 0; k < nbLights; k++)
                     {
@@ -176,7 +192,7 @@ int main()
 
                         if (CastRayToLight(ray, length, spheres, nbSphere))
                         {
-                            Vector3 norm = p - spheres[i].GetCenter();
+                            Vector3 norm = p - sphere_i.GetCenter();
                             norm = Vector3::normalize(norm);
                             float angle = Vector3::dot(norm, dir);
                             angle = abs(angle);
@@ -187,9 +203,8 @@ int main()
 
                     //std::cout << colSurface << " ";
 
-                    colSurface = colSurface * spheres[i].GetAlbedo();
+                    colSurface = colSurface * sphere_i.GetAlbedo();
                 }
-            }
 
             Vector3 clampedColor = ClampColor(colSurface);
             ChangeColor(image, index, clampedColor.x, clampedColor.y, clampedColor.z, 255);
