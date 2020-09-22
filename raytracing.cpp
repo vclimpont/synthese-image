@@ -138,7 +138,7 @@ float GetMinRayToSpheres(Ray ray, Sphere& sphere_i, Sphere spheres[], int nbSphe
 Vector3 GetReflectDirection(Vector3 dirRay, Vector3 norm)
 {
     Vector3 r = norm * Vector3::dot(dirRay * -1.0f, norm) * 2 + dirRay;
-    cout << dirRay << " " << r;
+    //cout << dirRay << " " << r;
     return r;
 }
 
@@ -172,20 +172,26 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
                     colSurface = colSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
                 }
             }
+
+            //std::cout << colSurface << " ";
+            colSurface = colSurface * sphere_i.GetAlbedo();
+
         }
         else
         {
-            //Vector3 norm = p - sphere_i.GetCenter();
-            //norm = Vector3::normalize(norm);
-            //Vector3 r = GetReflectDirection(ray.GetDirection(), norm);
-            //Ray ray = Ray(p, r);
+            Vector3 p = intersectPoint;
+            Vector3 norm = p - sphere_i.GetCenter();
+            norm = Vector3::normalize(norm);
+            Vector3 r = GetReflectDirection(rayToSphere.GetDirection(), norm);
+            p = p + r * 0.01f;
+            Ray ray = Ray(p, r);
 
-            //GetLightIntensityOnSurface(colSurface, ray, spheres, nbSphere, lights, nbLights);
+            GetLightIntensityOnSurface(colSurface, ray, spheres, nbSphere, lights, nbLights);
         }
-
-        //std::cout << colSurface << " ";
-
-        colSurface = colSurface * sphere_i.GetAlbedo();
+    }
+    else // No sphere hit
+    {
+        colSurface = Vector3(150, 150, 150);
     }
 }
 
@@ -193,20 +199,20 @@ int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
 
-    const int nbSphere = 5;
-    Sphere s1 = Sphere(Vector3(100, 256, 100), 50.0f, Vector3(1, 1, 1), true);
-    Sphere s2 = Sphere(Vector3(256, 100, 100), 50.0f, Vector3(1, 1, 1), true);
-    Sphere s3 = Sphere(Vector3(412, 256, 100), 50.0f, Vector3(1, 1, 1), true);
-    Sphere s4 = Sphere(Vector3(256, 412, 100), 50.0f, Vector3(1, 1, 1), true);
-    Sphere s5 = Sphere(Vector3(256, 256, 300), 100.0f, Vector3(1, 1, 1), false);
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5 };
+    const int nbSphere = 6;
+    Sphere s1 = Sphere(Vector3(100, 100, 100), 75.0f, Vector3(0, 1, 0), true);
+    Sphere s2 = Sphere(Vector3(412, 100, 100), 75.0f, Vector3(1, 0, 0), true);
+    Sphere s3 = Sphere(Vector3(256, 100, 100), 50.0f, Vector3(1, 1, 0), true);
+    Sphere s4 = Sphere(Vector3(312, 256, 500), 200.0f, Vector3(1, 1, 1), false);
+    Sphere s5 = Sphere(Vector3(100, 400, 100), 100.0f, Vector3(1, 1, 1), false);
+    Sphere s6 = Sphere(Vector3(400, 400, 400), 100.0f, Vector3(1, 1, 1), false);
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5, s6};
 
-    const int nbLights = 4;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 0, 0), 50000000.0f);
+    const int nbLights = 1;
+    Light l1 = Light(Vector3(256, 256, 30), Vector3(1, 1, 1), 50000000.0f);
     Light l2 = Light(Vector3(512, 0, 100), Vector3(0, 0, 1), 40000000.0f);
-    Light l3 = Light(Vector3(0, 512, 120), Vector3(0, 1, 0), 50000000.0f);
-    Light l4 = Light(Vector3(512, 512, 80), Vector3(1, 1, 0), 40000000.0f);
-    Light lights[nbLights]{ l1, l2, l3, l4 };
+    Light l3 = Light(Vector3(0, 510, 120), Vector3(1, 0, 0), 100000000.0f);
+    Light lights[nbLights]{ l1 };
 
     float maxIntensity = GetMaxIntensity(lights, nbLights);
 
@@ -221,7 +227,7 @@ int main()
         for (unsigned x = 0; x < width; x++) {
 
             int index = 4 * width * y + 4 * x;
-            Vector3 colSurface = Vector3(0, 0, 0);
+            Vector3 colSurface = Vector3(0, 20, 20);
 
             Ray rayToSphere = Ray(Vector3(x, y, 0), dirRay);
             GetLightIntensityOnSurface(colSurface, rayToSphere, spheres, nbSphere, lights, nbLights);
