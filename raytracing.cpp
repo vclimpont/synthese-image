@@ -142,6 +142,43 @@ Vector3 GetReflectDirection(Vector3 dirRay, Vector3 norm)
     return r;
 }
 
+void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights)
+{
+    Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
+    float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres, nbSphere);
+
+    if (n1 != INFINITY)
+    {
+        for (int k = 0; k < nbLights; k++)
+        {
+            if (sphere_i.GetDiffuse() == true)
+            {
+                Vector3 rayPoint = rayToSphere.GetPosition();
+                Vector3 p = Vector3(rayPoint.x, rayPoint.y, n1);
+                Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
+                float length = dir.length();
+                dir = Vector3::normalize(dir);
+                p = p + dir * 0.01f;
+                Ray ray = Ray(p, dir);
+
+                if (CastRayToLight(ray, length, spheres, nbSphere))
+                {
+                    Vector3 norm = p - sphere_i.GetCenter();
+                    norm = Vector3::normalize(norm);
+                    float angle = Vector3::dot(norm, dir);
+                    angle = abs(angle);
+
+                    colSurface = colSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
+                }
+            }
+
+        }
+
+        //std::cout << colSurface << " ";
+
+        colSurface = colSurface * sphere_i.GetAlbedo();
+    }
+}
 
 int main()
 {
@@ -178,35 +215,7 @@ int main()
             Vector3 colSurface = Vector3(0, 0, 0);
 
             Ray rayToSphere = Ray(Vector3(x, y, 0), dirRay);
-            Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
-            float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres, nbSphere);
-
-                if (n1 != INFINITY)
-                {
-                    for (int k = 0; k < nbLights; k++)
-                    {
-                        Vector3 p = Vector3(x, y, n1);
-                        Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
-                        float length = dir.length();
-                        dir = Vector3::normalize(dir);
-                        p = p + dir * 0.01f;
-                        Ray ray = Ray(p, dir);
-
-                        if (CastRayToLight(ray, length, spheres, nbSphere))
-                        {
-                            Vector3 norm = p - sphere_i.GetCenter();
-                            norm = Vector3::normalize(norm);
-                            float angle = Vector3::dot(norm, dir);
-                            angle = abs(angle);
-
-                            colSurface = colSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
-                        }
-                    }
-
-                    //std::cout << colSurface << " ";
-
-                    colSurface = colSurface * sphere_i.GetAlbedo();
-                }
+            GetLightIntensityOnSurface(colSurface, rayToSphere, spheres, nbSphere, lights, nbLights);
 
             Vector3 clampedColor = ClampColor(colSurface);
             ChangeColor(image, index, clampedColor.x, clampedColor.y, clampedColor.z, 255);
