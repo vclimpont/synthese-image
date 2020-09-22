@@ -150,16 +150,16 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
     if (n1 != INFINITY)
     {
         Vector3 rayPoint = rayToSphere.GetPosition();
-        Vector3 intersectPoint = Vector3(rayPoint.x, rayPoint.y, n1);
+        Vector3 intersectPoint = rayPoint + rayToSphere.GetDirection() * n1;
         if (sphere_i.GetDiffuse() == true)
         {
             for (int k = 0; k < nbLights; k++)
             {
                 Vector3 p = intersectPoint;
-                Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards 
+                Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards light k
                 float length = dir.length();
                 dir = Vector3::normalize(dir);
-                p = p + dir * 0.01f;
+                p = p + dir * 0.001f;
                 Ray ray = Ray(p, dir);
 
                 if (CastRayToLight(ray, length, spheres, nbSphere))
@@ -183,13 +183,18 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
             Vector3 norm = p - sphere_i.GetCenter();
             norm = Vector3::normalize(norm);
             Vector3 r = GetReflectDirection(rayToSphere.GetDirection(), norm);
-            p = p + r * 0.01f;
+            r = Vector3::normalize(r);
+            p = p + r * 0.001f;
             Ray ray = Ray(p, r);
 
             GetLightIntensityOnSurface(colSurface, ray, spheres, nbSphere, lights, nbLights);
         }
     }
-    else // No sphere hit
+    else if (rayToSphere.GetPosition().z != 0)
+    {
+        colSurface = Vector3(255, 255, 255);
+    }
+    else
     {
         colSurface = Vector3(150, 150, 150);
     }
@@ -199,17 +204,17 @@ int main()
 {
     Vector3 dirRay = Vector3(0, 0, 1);
 
-    const int nbSphere = 6;
+    const int nbSphere = 4;
     Sphere s1 = Sphere(Vector3(100, 100, 100), 75.0f, Vector3(0, 1, 0), true);
     Sphere s2 = Sphere(Vector3(412, 100, 100), 75.0f, Vector3(1, 0, 0), true);
     Sphere s3 = Sphere(Vector3(256, 100, 100), 50.0f, Vector3(1, 1, 0), true);
-    Sphere s4 = Sphere(Vector3(312, 256, 500), 200.0f, Vector3(1, 1, 1), false);
-    Sphere s5 = Sphere(Vector3(100, 400, 100), 100.0f, Vector3(1, 1, 1), false);
-    Sphere s6 = Sphere(Vector3(400, 400, 400), 100.0f, Vector3(1, 1, 1), false);
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5, s6};
+    Sphere s4 = Sphere(Vector3(256, 256, 300), 100.0f, Vector3(1, 1, 1), false);
+    Sphere s5 = Sphere(Vector3(325, 325, 197), 75.0f, Vector3(1, 1, 1), false);
+    Sphere s6 = Sphere(Vector3(384, 391, 222), 50.0f, Vector3(1, 1, 1), false);
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4};
 
     const int nbLights = 1;
-    Light l1 = Light(Vector3(256, 256, 30), Vector3(1, 1, 1), 50000000.0f);
+    Light l1 = Light(Vector3(256, 256, 150), Vector3(1, 1, 1), 50000000.0f);
     Light l2 = Light(Vector3(512, 0, 100), Vector3(0, 0, 1), 40000000.0f);
     Light l3 = Light(Vector3(0, 510, 120), Vector3(1, 0, 0), 100000000.0f);
     Light lights[nbLights]{ l1 };
