@@ -142,6 +142,14 @@ Vector3 GetReflectDirection(Vector3 dirRay, Vector3 norm)
     return r;
 }
 
+Vector3 GetPerspectiveDirection(Vector3 pixelPoint, Vector3 persPoint)
+{
+    Vector3 dirRay = pixelPoint - persPoint;
+    dirRay = Vector3::normalize(dirRay);
+
+    return dirRay;
+}
+
 void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights, int& nbBounce)
 {
     Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
@@ -193,32 +201,39 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
     }
     else if (rayToSphere.GetPosition().z != 0)
     {
-        colSurface = Vector3(255, 255, 255);
+        //colSurface = Vector3(255, 255, 255);
     }
     else
     {
-        colSurface = Vector3(150, 150, 150);
+        colSurface = Vector3(20, 20, 20);
     }
 }
 
 int main()
 {
-    Vector3 dirRay = Vector3(0, 0, 1);
+    //Vector3 dirRay = Vector3(0, 0, 1);
+    Vector3 persPoint = Vector3(512, 512, -600);
 
-    const int nbSphere = 6;
+    const int nbSphere = 8;
     Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true);
     Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true);
     Sphere s3 = Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true);
-    Sphere s4 = Sphere(Vector3(512, 512, 400), 200.0f, Vector3(1, 1, 1), false);
-    Sphere s5 = Sphere(Vector3(700, 470, 600), 150.0f, Vector3(1, 1, 1), false);
-    Sphere s6 = Sphere(Vector3(790, 402, 300), 100.0f, Vector3(1, 1, 1), false);
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5, s6};
+    Sphere s4 = Sphere(Vector3(30, 650, 400), 200.0f, Vector3(1, 1, 1), false);
+    Sphere s5 = Sphere(Vector3(1000, 650, 400), 200.0f, Vector3(1, 1, 1), false);
+    Sphere s6 = Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false);
+    Sphere s7 = Sphere(Vector3(512, 11030, 300), 10000.0f, Vector3(1, 1, 1), true);
+    Sphere s8 = Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true);
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
-    const int nbLights = 3;
-    Light l1 = Light(Vector3(512, 512, 50), Vector3(1, 1, 1), 50000000.0f);
-    Light l2 = Light(Vector3(1000, 0, 100), Vector3(0, 0, 1), 40000000.0f);
-    Light l3 = Light(Vector3(0, 1000, 120), Vector3(1, 0, 0), 100000000.0f);
-    Light lights[nbLights]{ l1, l2, l3 };
+    const int nbLights = 7;
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 100000000.0f);
+    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 100000000.0f);
+    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 80000000.0f);
+    Light l3 = Light(Vector3(300, 600, 10050), Vector3(1, 1, 1), 1000000000.0f);
+    Light l4 = Light(Vector3(700, 600, 10050), Vector3(1, 1, 1), 1000000000.0f);
+    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 800000000.0f);
+    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 80000000.0f);
+    Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7};
 
     float maxIntensity = GetMaxIntensity(lights, nbLights);
 
@@ -234,8 +249,10 @@ int main()
 
             int index = 4 * width * y + 4 * x;
             Vector3 colSurface = Vector3(0, 20, 20);
+            Vector3 pixelPoint = Vector3(x, y, 0);
+            Vector3 dirRay = GetPerspectiveDirection(pixelPoint, persPoint);
 
-            Ray rayToSphere = Ray(Vector3(x, y, 0), dirRay);
+            Ray rayToSphere = Ray(pixelPoint, dirRay);
             int nbBounce = 0;
             GetLightIntensityOnSurface(colSurface, rayToSphere, spheres, nbSphere, lights, nbLights, nbBounce);
 
