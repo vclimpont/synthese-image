@@ -150,6 +150,31 @@ Vector3 GetPerspectiveDirection(Vector3 pixelPoint, Vector3 persPoint)
     return dirRay;
 }
 
+float GetRandomFloatBetween(float a, float b)
+{
+    float r = a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a)));
+    return r;
+}
+
+void GetRandomPointsToLight(Vector3 randPointsOnLight[], int nbRays, Light l)
+{
+    if (l.GetRadius() == 0)
+    {
+        randPointsOnLight[0] = l.GetPosition();
+    }
+    else
+    {
+        for (int i = 0; i < nbRays; i++)
+        {
+            Vector3 lightPos = l.GetPosition();
+            float randX = GetRandomFloatBetween(-l.GetRadius(), l.GetRadius());
+            float randY = GetRandomFloatBetween(-l.GetRadius(), l.GetRadius());
+            float randZ = GetRandomFloatBetween(-l.GetRadius(), l.GetRadius());
+            randPointsOnLight[i] = Vector3(lightPos.x + randX, lightPos.y + randY, lightPos.z + randZ);
+        }
+    }
+}
+
 void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights, int& nbBounce)
 {
     Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
@@ -214,7 +239,7 @@ int main()
     //Vector3 dirRay = Vector3(0, 0, 1);
     Vector3 persPoint = Vector3(512, 512, -600);
 
-    const int nbSphere = 8;
+    const int nbSpheres = 8;
     Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true); // green sphere
     Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true); // red sphere
     Sphere s3 = Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true); // yellow sphere
@@ -223,19 +248,28 @@ int main()
     Sphere s6 = Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false);   // mirror mid
     Sphere s7 = Sphere(Vector3(512, 11100, 300), 10000.0f, Vector3(1, 1, 1), true); // floor
     Sphere s8 = Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true); // background
-    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5, s6, s7, s8 };
+    Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
     const int nbLights = 7;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 100000000.0f);
-    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 100000000.0f);
-    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 80000000.0f);
-    Light l3 = Light(Vector3(300, 600, 10050), Vector3(1, 1, 1), 1000000000.0f);
-    Light l4 = Light(Vector3(700, 600, 10050), Vector3(1, 1, 1), 1000000000.0f);
-    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 800000000.0f);
-    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 80000000.0f);
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 100000000.0f, 5.0f);
+    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 100000000.0f, 5.0f);
+    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 80000000.0f, 0);
+    Light l3 = Light(Vector3(300, 600, 10050), Vector3(1, 1, 1), 1000000000.0f, 0);
+    Light l4 = Light(Vector3(700, 600, 10050), Vector3(1, 1, 1), 1000000000.0f, 0);
+    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 800000000.0f, 0);
+    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 80000000.0f, 0);
     Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7};
 
     float maxIntensity = GetMaxIntensity(lights, nbLights);
+
+
+    const int nbRays = 5;
+    Vector3 randPointsOnLight[nbRays]{ Vector3(0, 0, 0) };
+    GetRandomPointsToLight(randPointsOnLight, nbRays, l1);
+    for (int i = 0; i < nbRays; i++)
+    {
+        std::cout << randPointsOnLight[i];
+    }
 
     const char* filename = "test.png";
 
@@ -254,7 +288,7 @@ int main()
 
             Ray rayToSphere = Ray(pixelPoint, dirRay);
             int nbBounce = 0;
-            GetLightIntensityOnSurface(colSurface, rayToSphere, spheres, nbSphere, lights, nbLights, nbBounce);
+            GetLightIntensityOnSurface(colSurface, rayToSphere, spheres, nbSpheres, lights, nbLights, nbBounce);
 
             Vector3 clampedColor = ClampColor(colSurface);
             ChangeColor(image, index, clampedColor.x, clampedColor.y, clampedColor.z, 255);
