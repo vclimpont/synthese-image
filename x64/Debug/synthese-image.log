@@ -3,10 +3,10 @@ C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(13,13)
 C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(23,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
 C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(29,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
 C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(73,82): warning C4244: 'argument' : conversion de 'double' en 'const float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(284,45): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(284,42): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(292,83): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(292,67): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(292,51): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(278,45): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(278,42): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(286,83): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(286,67): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(286,51): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
 C:\Users\valen\Documents\Visual Studio 2019\synthese-image\vector3.h(57): warning C4715: 'Vector3::normalize' : les chemins de contrôle ne retournent pas tous une valeur
   synthese-image.vcxproj -> C:\Users\valen\Documents\Visual Studio 2019\synthese-image\x64\Debug\synthese-image.exe

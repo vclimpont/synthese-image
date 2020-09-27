@@ -254,13 +254,13 @@ int main()
     Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
     const int nbLights = 7;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 100000000.0f, 10.0f);
-    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 100000000.0f, 10.0f);
-    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 80000000.0f, 20.0f);
-    Light l3 = Light(Vector3(300, 600, 1150), Vector3(1, 1, 1), 1000000000.0f, 25.0f);
-    Light l4 = Light(Vector3(700, 600, 1150), Vector3(1, 1, 1), 1000000000.0f, 25.0f);
-    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 800000000.0f, 10.0f);
-    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 80000000.0f, 10.0f);
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 300000000.0f, 10.0f);
+    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 300000000.0f, 10.0f);
+    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 100000000.0f, 20.0f);
+    Light l3 = Light(Vector3(300, 600, 1150), Vector3(1, 1, 1), 5000000000.0f, 25.0f);
+    Light l4 = Light(Vector3(700, 600, 1150), Vector3(1, 1, 1), 5000000000.0f, 25.0f);
+    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 1000000000.0f, 10.0f);
+    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 100000000.0f, 10.0f);
     Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7};
 
     const char* filename = "test.png";
