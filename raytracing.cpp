@@ -215,14 +215,14 @@ int main()
     Vector3 persPoint = Vector3(512, 512, -600);
 
     const int nbSphere = 8;
-    Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true);
-    Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true);
-    Sphere s3 = Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true);
-    Sphere s4 = Sphere(Vector3(30, 650, 400), 200.0f, Vector3(1, 1, 1), false);
-    Sphere s5 = Sphere(Vector3(1000, 650, 400), 200.0f, Vector3(1, 1, 1), false);
-    Sphere s6 = Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false);
-    Sphere s7 = Sphere(Vector3(512, 11030, 300), 10000.0f, Vector3(1, 1, 1), true);
-    Sphere s8 = Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true);
+    Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true); // green sphere
+    Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true); // red sphere
+    Sphere s3 = Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true); // yellow sphere
+    Sphere s4 = Sphere(Vector3(30, 650, 400), 200.0f, Vector3(1, 1, 1), false); // mirror left
+    Sphere s5 = Sphere(Vector3(1000, 650, 400), 200.0f, Vector3(1, 1, 1), false); // mirror right
+    Sphere s6 = Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false);   // mirror mid
+    Sphere s7 = Sphere(Vector3(512, 11100, 300), 10000.0f, Vector3(1, 1, 1), true); // floor
+    Sphere s8 = Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true); // background
     Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
     const int nbLights = 7;
