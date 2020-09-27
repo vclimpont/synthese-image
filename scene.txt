@@ -1,0 +1,20 @@
+    const int nbSphere = 8;
+    Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true);
+    Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true);
+    Sphere s3 = Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true);
+    Sphere s4 = Sphere(Vector3(30, 650, 400), 200.0f, Vector3(1, 1, 1), false);
+    Sphere s5 = Sphere(Vector3(1000, 650, 400), 200.0f, Vector3(1, 1, 1), false);
+    Sphere s6 = Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false);
+    Sphere s7 = Sphere(Vector3(512, 11030, 300), 10000.0f, Vector3(1, 1, 1), true);
+    Sphere s8 = Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true);
+    Sphere spheres[nbSphere]{ s1, s2, s3, s4, s5, s6, s7, s8 };
+
+    const int nbLights = 7;
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 100000000.0f);
+    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 100000000.0f);
+    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 80000000.0f);
+    Light l3 = Light(Vector3(300, 600, 10050), Vector3(1, 1, 1), 1000000000.0f);
+    Light l4 = Light(Vector3(700, 600, 10050), Vector3(1, 1, 1), 1000000000.0f);
+    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 800000000.0f);
+    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 80000000.0f);
+    Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7};
