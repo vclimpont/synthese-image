@@ -182,32 +182,39 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
 
     if (n1 != INFINITY)
     {
+        const int nbRays = 5;
         Vector3 rayPoint = rayToSphere.GetPosition();
         Vector3 intersectPoint = rayPoint + rayToSphere.GetDirection() * n1;
         if (sphere_i.GetDiffuse() == true)
         {
             for (int k = 0; k < nbLights; k++)
             {
-                Vector3 p = intersectPoint;
-                Vector3 dir = lights[k].GetPosition() - p;    // direction vector towards light k
-                float length = dir.length();
-                dir = Vector3::normalize(dir);
-                p = p + dir * 0.001f;
-                Ray ray = Ray(p, dir);
+                Vector3 randPointsOnLight[nbRays]{ Vector3(0, 0, 0) };
+                GetRandomPointsToLight(randPointsOnLight, 5, lights[k]);
 
-                if (CastRayToLight(ray, length, spheres, nbSphere))
+                for (int i = 0; i < nbRays; i++)
                 {
-                    Vector3 norm = p - sphere_i.GetCenter();
-                    norm = Vector3::normalize(norm);
-                    float angle = Vector3::dot(norm, dir);
-                    angle = abs(angle);
+                    Vector3 p = intersectPoint;
+                    Vector3 dir = randPointsOnLight[i] - p;    // direction vector towards light k
+                    float length = dir.length();
+                    dir = Vector3::normalize(dir);
+                    p = p + dir * 0.001f;
+                    Ray ray = Ray(p, dir);
 
-                    colSurface = colSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
+                    if (CastRayToLight(ray, length, spheres, nbSphere))
+                    {
+                        Vector3 norm = p - sphere_i.GetCenter();
+                        norm = Vector3::normalize(norm);
+                        float angle = Vector3::dot(norm, dir);
+                        angle = abs(angle);
+
+                        colSurface = colSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
+                    }
                 }
             }
 
             //std::cout << colSurface << " ";
-            colSurface = colSurface * sphere_i.GetAlbedo();
+            colSurface = (colSurface * sphere_i.GetAlbedo()) / nbRays;
 
         }
         else if(nbBounce < 10)
@@ -223,10 +230,6 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
             nbBounce++;
             GetLightIntensityOnSurface(colSurface, ray, spheres, nbSphere, lights, nbLights, nbBounce);
         }
-    }
-    else if (rayToSphere.GetPosition().z != 0)
-    {
-        //colSurface = Vector3(255, 255, 255);
     }
     else
     {
@@ -251,25 +254,14 @@ int main()
     Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
     const int nbLights = 7;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 100000000.0f, 5.0f);
-    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 100000000.0f, 5.0f);
-    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 80000000.0f, 0);
-    Light l3 = Light(Vector3(300, 600, 10050), Vector3(1, 1, 1), 1000000000.0f, 0);
-    Light l4 = Light(Vector3(700, 600, 10050), Vector3(1, 1, 1), 1000000000.0f, 0);
-    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 800000000.0f, 0);
-    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 80000000.0f, 0);
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 100000000.0f, 10.0f);
+    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 100000000.0f, 10.0f);
+    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 80000000.0f, 20.0f);
+    Light l3 = Light(Vector3(300, 600, 1150), Vector3(1, 1, 1), 1000000000.0f, 25.0f);
+    Light l4 = Light(Vector3(700, 600, 1150), Vector3(1, 1, 1), 1000000000.0f, 25.0f);
+    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 800000000.0f, 10.0f);
+    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 80000000.0f, 10.0f);
     Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7};
-
-    float maxIntensity = GetMaxIntensity(lights, nbLights);
-
-
-    const int nbRays = 5;
-    Vector3 randPointsOnLight[nbRays]{ Vector3(0, 0, 0) };
-    GetRandomPointsToLight(randPointsOnLight, nbRays, l1);
-    for (int i = 0; i < nbRays; i++)
-    {
-        std::cout << randPointsOnLight[i];
-    }
 
     const char* filename = "test.png";
 
