@@ -1,16 +1,17 @@
 ﻿  raytracing.cpp
-D:\SyntheseImage\synthese-image\raytracing.cpp(13,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(23,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(29,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(73,82): warning C4244: 'argument' : conversion de 'double' en 'const float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(300,49): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(300,46): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(310,83): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(310,67): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-D:\SyntheseImage\synthese-image\raytracing.cpp(310,51): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(17,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(27,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(33,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(77,82): warning C4244: 'argument' : conversion de 'double' en 'const float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(160,16): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(307,49): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(307,46): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(317,83): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(317,67): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(317,51): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
   Génération de code en cours
-  1 of 348 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  2 of 367 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+    8 functions had inline decision re-evaluated but remain unchanged
   Fin de la génération du code
   synthese-image.vcxproj -> D:\SyntheseImage\synthese-image\x64\Release\synthese-image.exe

@@ -4,7 +4,11 @@
 #include "Light.cpp"
 #include "lodepng.h"
 #include <iostream>
+#include <random>
 using namespace std;
+
+std::random_device rd;
+std::mt19937 e2(rd());
 
 float hit_sphere(Ray ray, Sphere sphere)
 {
@@ -152,8 +156,8 @@ Vector3 GetPerspectiveDirection(Vector3 pixelPoint, Vector3 persPoint)
 
 float GetRandomFloatBetween(float a, float b)
 {
-    float r = a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a))); // pas comme ça (pas diviser par randmax)
-    return r;
+    std::uniform_real_distribution<> dist(a, b);
+    return dist(e2);
 }
 
 Vector3 GetRandomVectorBetween(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
@@ -172,6 +176,11 @@ Vector3 GetRandomVectorBetween(float offset)
     float randZ = GetRandomFloatBetween(-offset, offset);
 
     return Vector3(randX, randY, randZ);
+}
+
+Vector3 GetRandomPointOnSphereWithDensity(Sphere s)
+{
+
 }
 
 void GetRandomPointsToLight(Vector3 randPointsOnLight[], int nbRays, Light l)
@@ -209,6 +218,7 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
             {
                 Vector3 randPointsOnLight[nbRays]{ Vector3(0, 0, 0) };
                 GetRandomPointsToLight(randPointsOnLight, nbRays, lights[k]);
+                Vector3 lightIntensityOnSurface = Vector3(0, 0, 0);
 
                 for (int i = 0; i < nbRays; i++)
                 {
@@ -226,9 +236,11 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
                         float angle = Vector3::dot(norm, dir);
                         angle = abs(angle);
 
-                        newColSurface = newColSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
+                        lightIntensityOnSurface = lightIntensityOnSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
                     }
                 }
+
+                newColSurface = newColSurface + lightIntensityOnSurface;
             }
 
             //std::cout << colSurface << " ";
@@ -242,7 +254,7 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
             norm = Vector3::normalize(norm);
             Vector3 r = GetReflectDirection(rayToSphere.GetDirection(), norm);
             r = Vector3::normalize(r);
-            p = p + r * 0.001f;
+            p = p + r * 0.01f;
             Ray ray = Ray(p, r);
 
             nbBounce++;
@@ -257,7 +269,7 @@ int main()
 {
     //Vector3 dirRay = Vector3(0, 0, 1);
     Vector3 persPoint = Vector3(512, 512, -600);
-    const int nbRaysPerPixels = 10;
+    const int nbRaysPerPixels = 1;
     const float randomOffsetPerPixels = 1.5f;
 
     const int nbSpheres = 8;
@@ -297,7 +309,7 @@ int main()
             for (int i = 0; i < nbRaysPerPixels; i++)
             {
                 Vector3 randomOffset = Vector3(GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), 0);
-                Vector3 pixelPoint = Vector3(x, y, 0) + randomOffset;
+                Vector3 pixelPoint = Vector3(x, y, 0);// +randomOffset;
                 Vector3 dirRay = GetPerspectiveDirection(pixelPoint, persPoint);
 
                 Ray rayToSphere = Ray(pixelPoint, dirRay);
