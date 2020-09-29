@@ -152,7 +152,7 @@ Vector3 GetPerspectiveDirection(Vector3 pixelPoint, Vector3 persPoint)
 
 float GetRandomFloatBetween(float a, float b)
 {
-    float r = a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a)));
+    float r = a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a))); // pas comme ça (pas diviser par randmax)
     return r;
 }
 
@@ -161,6 +161,15 @@ Vector3 GetRandomVectorBetween(float minX, float maxX, float minY, float maxY, f
     float randX = GetRandomFloatBetween(minX, maxX);
     float randY = GetRandomFloatBetween(minY, maxY);
     float randZ = GetRandomFloatBetween(minZ, maxZ);
+
+    return Vector3(randX, randY, randZ);
+}
+
+Vector3 GetRandomVectorBetween(float offset)
+{
+    float randX = GetRandomFloatBetween(-offset, offset);
+    float randY = GetRandomFloatBetween(-offset, offset);
+    float randZ = GetRandomFloatBetween(-offset, offset);
 
     return Vector3(randX, randY, randZ);
 }
@@ -177,20 +186,21 @@ void GetRandomPointsToLight(Vector3 randPointsOnLight[], int nbRays, Light l)
         {
             Vector3 lightPos = l.GetPosition();
             float lightRadius = l.GetRadius();
-            Vector3 randomVector = GetRandomVectorBetween(-lightRadius, lightRadius, -lightRadius, lightRadius, -lightRadius, lightRadius);
+            Vector3 randomVector = GetRandomVectorBetween(lightRadius);
             randPointsOnLight[i] = lightPos + randomVector;
         }
     }
 }
 
-void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights, int& nbBounce)
+Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights, int& nbBounce)
 {
+    Vector3 newColSurface = colSurface;
     Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
     float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres, nbSphere);
 
     if (n1 != INFINITY)
     {
-        const int nbRays = 10;
+        const int nbRays = 5;
         Vector3 rayPoint = rayToSphere.GetPosition();
         Vector3 intersectPoint = rayPoint + rayToSphere.GetDirection() * n1;
         if (sphere_i.GetDiffuse() == true)
@@ -216,13 +226,13 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
                         float angle = Vector3::dot(norm, dir);
                         angle = abs(angle);
 
-                        colSurface = colSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
+                        newColSurface = newColSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
                     }
                 }
             }
 
             //std::cout << colSurface << " ";
-            colSurface = (colSurface * sphere_i.GetAlbedo()) / nbRays;
+            newColSurface = (newColSurface * sphere_i.GetAlbedo()) / nbRays;
 
         }
         else if(nbBounce < 10)
@@ -236,19 +246,19 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
             Ray ray = Ray(p, r);
 
             nbBounce++;
-            GetLightIntensityOnSurface(colSurface, ray, spheres, nbSphere, lights, nbLights, nbBounce);
+            return GetLightIntensityOnSurface(newColSurface, ray, spheres, nbSphere, lights, nbLights, nbBounce);
         }
     }
-    else
-    {
-        colSurface = Vector3(20, 20, 20);
-    }
+
+    return newColSurface;
 }
 
 int main()
 {
     //Vector3 dirRay = Vector3(0, 0, 1);
     Vector3 persPoint = Vector3(512, 512, -600);
+    const int nbRaysPerPixels = 10;
+    const float randomOffsetPerPixels = 1.5f;
 
     const int nbSpheres = 8;
     Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true); // green sphere
@@ -262,7 +272,7 @@ int main()
     Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
     const int nbLights = 7;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 80000000, 10.0f);
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f);
     Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f);
     Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 100000000.0f, 20.0f);
     Light l3 = Light(Vector3(-1000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
@@ -282,13 +292,19 @@ int main()
         for (unsigned x = 0; x < width; x++) {
 
             int index = 4 * width * y + 4 * x;
-            Vector3 colSurface = Vector3(0, 20, 20);
-            Vector3 pixelPoint = Vector3(x, y, 0);
-            Vector3 dirRay = GetPerspectiveDirection(pixelPoint, persPoint);
+            Vector3 colSurface = Vector3(0, 0, 0);
 
-            Ray rayToSphere = Ray(pixelPoint, dirRay);
-            int nbBounce = 0;
-            GetLightIntensityOnSurface(colSurface, rayToSphere, spheres, nbSpheres, lights, nbLights, nbBounce);
+            for (int i = 0; i < nbRaysPerPixels; i++)
+            {
+                Vector3 randomOffset = Vector3(GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), 0);
+                Vector3 pixelPoint = Vector3(x, y, 0) + randomOffset;
+                Vector3 dirRay = GetPerspectiveDirection(pixelPoint, persPoint);
+
+                Ray rayToSphere = Ray(pixelPoint, dirRay);
+                int nbBounce = 0;
+                colSurface = colSurface + GetLightIntensityOnSurface(Vector3(0,0,0), rayToSphere, spheres, nbSpheres, lights, nbLights, nbBounce);
+            }
+            colSurface = colSurface / nbRaysPerPixels;
 
             Vector3 clampedColor = ClampColor(colSurface);
             ChangeColor(image, index, clampedColor.x, clampedColor.y, clampedColor.z, 255);
