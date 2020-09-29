@@ -156,6 +156,15 @@ float GetRandomFloatBetween(float a, float b)
     return r;
 }
 
+Vector3 GetRandomVectorBetween(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+{
+    float randX = GetRandomFloatBetween(minX, maxX);
+    float randY = GetRandomFloatBetween(minY, maxY);
+    float randZ = GetRandomFloatBetween(minZ, maxZ);
+
+    return Vector3(randX, randY, randZ);
+}
+
 void GetRandomPointsToLight(Vector3 randPointsOnLight[], int nbRays, Light l)
 {
     if (l.GetRadius() == 0)
@@ -167,10 +176,9 @@ void GetRandomPointsToLight(Vector3 randPointsOnLight[], int nbRays, Light l)
         for (int i = 0; i < nbRays; i++)
         {
             Vector3 lightPos = l.GetPosition();
-            float randX = GetRandomFloatBetween(-l.GetRadius(), l.GetRadius());
-            float randY = GetRandomFloatBetween(-l.GetRadius(), l.GetRadius());
-            float randZ = GetRandomFloatBetween(-l.GetRadius(), l.GetRadius());
-            randPointsOnLight[i] = Vector3(lightPos.x + randX, lightPos.y + randY, lightPos.z + randZ);
+            float lightRadius = l.GetRadius();
+            Vector3 randomVector = GetRandomVectorBetween(-lightRadius, lightRadius, -lightRadius, lightRadius, -lightRadius, lightRadius);
+            randPointsOnLight[i] = lightPos + randomVector;
         }
     }
 }
@@ -182,7 +190,7 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
 
     if (n1 != INFINITY)
     {
-        const int nbRays = 5;
+        const int nbRays = 10;
         Vector3 rayPoint = rayToSphere.GetPosition();
         Vector3 intersectPoint = rayPoint + rayToSphere.GetDirection() * n1;
         if (sphere_i.GetDiffuse() == true)
@@ -190,7 +198,7 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
             for (int k = 0; k < nbLights; k++)
             {
                 Vector3 randPointsOnLight[nbRays]{ Vector3(0, 0, 0) };
-                GetRandomPointsToLight(randPointsOnLight, 5, lights[k]);
+                GetRandomPointsToLight(randPointsOnLight, nbRays, lights[k]);
 
                 for (int i = 0; i < nbRays; i++)
                 {
@@ -198,7 +206,7 @@ void GetLightIntensityOnSurface(Vector3& colSurface, Ray rayToSphere, Sphere sph
                     Vector3 dir = randPointsOnLight[i] - p;    // direction vector towards light k
                     float length = dir.length();
                     dir = Vector3::normalize(dir);
-                    p = p + dir * 0.001f;
+                    p = p + dir * 0.01f;
                     Ray ray = Ray(p, dir);
 
                     if (CastRayToLight(ray, length, spheres, nbSphere))
@@ -254,14 +262,14 @@ int main()
     Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
     const int nbLights = 7;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 300000000.0f, 10.0f);
-    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 300000000.0f, 10.0f);
+    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 80000000, 10.0f);
+    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f);
     Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 100000000.0f, 20.0f);
-    Light l3 = Light(Vector3(300, 600, 1150), Vector3(1, 1, 1), 5000000000.0f, 25.0f);
-    Light l4 = Light(Vector3(700, 600, 1150), Vector3(1, 1, 1), 5000000000.0f, 25.0f);
-    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 1000000000.0f, 10.0f);
-    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 100000000.0f, 10.0f);
-    Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7};
+    Light l3 = Light(Vector3(-1000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
+    Light l4 = Light(Vector3(2000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
+    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 200000000.0f, 10.0f);
+    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 200000000.0f, 10.0f);
+    Light lights[nbLights]{l1, l2, l3, l4, l5, l6, l7};
 
     const char* filename = "test.png";
 

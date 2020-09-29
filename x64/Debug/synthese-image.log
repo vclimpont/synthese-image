@@ -1,12 +1,12 @@
 ﻿  raytracing.cpp
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(13,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(23,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(29,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(73,82): warning C4244: 'argument' : conversion de 'double' en 'const float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(278,45): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(278,42): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(286,83): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(286,67): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\raytracing.cpp(286,51): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
-C:\Users\valen\Documents\Visual Studio 2019\synthese-image\vector3.h(57): warning C4715: 'Vector3::normalize' : les chemins de contrôle ne retournent pas tous une valeur
-  synthese-image.vcxproj -> C:\Users\valen\Documents\Visual Studio 2019\synthese-image\x64\Debug\synthese-image.exe
+D:\SyntheseImage\synthese-image\raytracing.cpp(13,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(23,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(29,30): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(73,82): warning C4244: 'argument' : conversion de 'double' en 'const float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(279,45): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(279,42): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(287,83): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(287,67): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\raytracing.cpp(287,51): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+D:\SyntheseImage\synthese-image\vector3.h(57): warning C4715: 'Vector3::normalize' : les chemins de contrôle ne retournent pas tous une valeur
+  synthese-image.vcxproj -> D:\SyntheseImage\synthese-image\x64\Debug\synthese-image.exe
