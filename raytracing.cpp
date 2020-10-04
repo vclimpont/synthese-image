@@ -75,7 +75,6 @@ Vector3 ClampColor(Vector3 color)
 Vector3 CalculateColor(Light l, float angle, float length)
 {
     Vector3 color = (l.GetColor() * l.GetIntensity() * angle) / (length * length * M_PI);
-    //std::cout << l.GetColor() << " " << l.GetIntensity() << " " << angle << " " << (length) << " " << (length * length * M_PI) << " " << color << "    ";
 
     return color;
 }
@@ -146,9 +145,9 @@ Vector3 GetReflectDirection(Vector3 dirRay, Vector3 norm)
     return r;
 }
 
-Vector3 GetPerspectiveDirection(Vector3 pixelPoint, Vector3 persPoint)
+Vector3 GetNormalizedDirectionFromPoints(Vector3 pa, Vector3 pb)
 {
-    Vector3 dirRay = pixelPoint - persPoint;
+    Vector3 dirRay = pa - pb;
     dirRay = Vector3::normalize(dirRay);
 
     return dirRay;
@@ -180,7 +179,18 @@ Vector3 GetRandomVectorBetween(float offset)
 
 Vector3 GetRandomPointOnSphereWithDensity(Sphere s)
 {
+    float r1 = GetRandomFloatBetween(0, 1);
+    float r2 = GetRandomFloatBetween(0, 1);
 
+    float R2 = 2 * s.GetRadius();
+    float pi2R1 = 2 * M_PI * r1;
+    float sqrtR2 = sqrt(r2 * (1 - r2));
+
+    float x = s.GetCenter().x + R2 * cos(pi2R1) * sqrtR2;
+    float y = s.GetCenter().y + R2 * sin(pi2R1) * sqrtR2;
+    float z = s.GetCenter().z + s.GetRadius() * (1 - 2 * r2);
+
+    return Vector3(x, y, z);
 }
 
 void GetRandomPointsToLight(Vector3 randPointsOnLight[], int nbRays, Light l)
@@ -209,7 +219,7 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
 
     if (n1 != INFINITY)
     {
-        const int nbRays = 5;
+        const int nbRays = 1;
         Vector3 rayPoint = rayToSphere.GetPosition();
         Vector3 intersectPoint = rayPoint + rayToSphere.GetDirection() * n1;
         if (sphere_i.GetDiffuse() == true)
@@ -272,6 +282,13 @@ int main()
     const int nbRaysPerPixels = 1;
     const float randomOffsetPerPixels = 1.5f;
 
+    Sphere s0 = Sphere(Vector3(0, 0, 0), 1, Vector3(0, 0, 0), true);
+    Vector3 p = Vector3(0, 1, 0);
+    Vector3 rpos = GetRandomPointOnSphereWithDensity(s0);
+    rpos = Vector3(1, 0, 0);
+    Vector3 dir = GetNormalizedDirectionFromPoints(p, rpos);
+    std::cout << rpos << " " << dir;
+         
     const int nbSpheres = 8;
     Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true); // green sphere
     Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true); // red sphere
@@ -310,7 +327,7 @@ int main()
             {
                 Vector3 randomOffset = Vector3(GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), 0);
                 Vector3 pixelPoint = Vector3(x, y, 0);// +randomOffset;
-                Vector3 dirRay = GetPerspectiveDirection(pixelPoint, persPoint);
+                Vector3 dirRay = GetNormalizedDirectionFromPoints(pixelPoint, persPoint);
 
                 Ray rayToSphere = Ray(pixelPoint, dirRay);
                 int nbBounce = 0;
