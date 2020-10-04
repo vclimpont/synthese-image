@@ -211,9 +211,17 @@ void GetRandomPointsToLight(Vector3 randPointsOnLight[], int nbRays, Light l)
     }
 }
 
+float GetAngleFrom(Vector3 pa, Vector3 pb)
+{
+    float angle = Vector3::dot(pa, pb);
+    angle = abs(angle);
+
+    return angle;
+}
+
 Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights, int& nbBounce)
 {
-    Vector3 newColSurface = colSurface;
+    Vector3 newColSurfaceFromLights = colSurface;
     Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
     float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres, nbSphere);
 
@@ -241,21 +249,46 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
 
                     if (CastRayToLight(ray, length, spheres, nbSphere))
                     {
-                        Vector3 norm = p - sphere_i.GetCenter();
-                        norm = Vector3::normalize(norm);
-                        float angle = Vector3::dot(norm, dir);
-                        angle = abs(angle);
+                        Vector3 norm = GetNormalizedDirectionFromPoints(p, sphere_i.GetCenter());
+                        float angle = GetAngleFrom(norm, dir);
 
                         lightIntensityOnSurface = lightIntensityOnSurface + CalculateColor(lights[k], angle, length); // add the light color and intensity to the current color
                     }
                 }
 
-                newColSurface = newColSurface + lightIntensityOnSurface;
+                newColSurfaceFromLights = newColSurfaceFromLights + lightIntensityOnSurface;
             }
 
-            //std::cout << colSurface << " ";
-            newColSurface = (newColSurface * sphere_i.GetAlbedo()) / nbRays;
+            newColSurfaceFromLights = (newColSurfaceFromLights * sphere_i.GetAlbedo()) / nbRays;
 
+            Vector3 colSurfaceFromSpheres = Vector3(0, 0, 0);
+            Vector3 rpos = GetRandomPointOnSphereWithDensity(sphere_i);
+            Vector3 p = intersectPoint;
+            Vector3 dir = GetNormalizedDirectionFromPoints(p, rpos);
+            p = p + dir * 0.01f;
+            Ray ray = Ray(p, dir);
+            int bouncesOnMirrors = 0;
+            Vector3 colOnSphereJ = GetLightIntensityOnSurface(Vector3(0, 0, 0), ray, spheres, nbSphere, lights, nbLights, bouncesOnMirrors);
+
+            Sphere sphere_j = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
+            float n2 = GetMinRayToSpheres(ray, sphere_j, spheres, nbSphere);
+
+            if (n2 != INFINITY)
+            {
+                Vector3 pj = intersectPoint + dir * n2;
+
+                Vector3 norm_i = GetNormalizedDirectionFromPoints(p, sphere_i.GetCenter());
+                float angle_i = GetAngleFrom(norm_i, dir);
+
+                Vector3 norm_j = GetNormalizedDirectionFromPoints(pj, sphere_j.GetCenter());
+                float angle_j = GetAngleFrom(norm_j, dir * -1);
+
+                colOnSphereJ = (colOnSphereJ * angle_i * angle_j) / (n2 * n2);
+
+                colSurfaceFromSpheres = sphere_i.GetAlbedo() * colOnSphereJ;
+            }
+
+            newColSurfaceFromLights = newColSurfaceFromLights + colSurfaceFromSpheres;
         }
         else if(nbBounce < 10)
         {
@@ -268,11 +301,11 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
             Ray ray = Ray(p, r);
 
             nbBounce++;
-            return GetLightIntensityOnSurface(newColSurface, ray, spheres, nbSphere, lights, nbLights, nbBounce);
+            return GetLightIntensityOnSurface(newColSurfaceFromLights, ray, spheres, nbSphere, lights, nbLights, nbBounce);
         }
     }
 
-    return newColSurface;
+    return newColSurfaceFromLights;
 }
 
 int main()
@@ -280,14 +313,7 @@ int main()
     //Vector3 dirRay = Vector3(0, 0, 1);
     Vector3 persPoint = Vector3(512, 512, -600);
     const int nbRaysPerPixels = 1;
-    const float randomOffsetPerPixels = 1.5f;
-
-    Sphere s0 = Sphere(Vector3(0, 0, 0), 1, Vector3(0, 0, 0), true);
-    Vector3 p = Vector3(0, 1, 0);
-    Vector3 rpos = GetRandomPointOnSphereWithDensity(s0);
-    rpos = Vector3(1, 0, 0);
-    Vector3 dir = GetNormalizedDirectionFromPoints(p, rpos);
-    std::cout << rpos << " " << dir;
+    const float randomOffsetPerPixels = 1;
          
     const int nbSpheres = 8;
     Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true); // green sphere
