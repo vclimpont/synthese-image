@@ -1,0 +1,12 @@
+    const int nbSpheres = 3;
+    Sphere s1 = Sphere(Vector3(85, 255, 100), 75, Vector3(0, 1, 0), true); // green sphere
+    Sphere s2 = Sphere(Vector3(255, 170, 100), 75, Vector3(1, 1, 0), true); // ylw sphere
+    Sphere s3 = Sphere(Vector3(425, 255, 100), 75, Vector3(1, 0, 0), true); // red sphere
+    Sphere spheres[nbSpheres]{ s1, s2, s3 };
+
+    const int nbLights = 4;
+    Light l1 = Light(Vector3(0, 0, 50), Vector3(1, 1, 1), 80000000.0f, 10.0f);
+    Light l2 = Light(Vector3(512, 0, 50), Vector3(1, 1, 1), 80000000.0f, 10.0f);
+    Light l3 = Light(Vector3(255, 255, 10), Vector3(1, 1, 1), 100000000.0f, 20.0f);
+    Light l4 = Light(Vector3(255, 100, 10), Vector3(1, 1, 1), 100000000.0f, 20.0f);
+    Light lights[nbLights]{l1, l2, l3, l4 };

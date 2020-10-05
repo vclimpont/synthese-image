@@ -141,7 +141,6 @@ float GetMinRayToSpheres(Ray ray, Sphere& sphere_i, Sphere spheres[], int nbSphe
 Vector3 GetReflectDirection(Vector3 dirRay, Vector3 norm)
 {
     Vector3 r = norm * Vector3::dot(dirRay * -1.0f, norm) * 2 + dirRay;
-    //cout << dirRay << " " << r;
     return r;
 }
 
@@ -219,7 +218,7 @@ float GetAngleFrom(Vector3 pa, Vector3 pb)
     return angle;
 }
 
-Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights, int& nbBounce)
+Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere spheres[], int nbSphere, Light lights[], int nbLights, int& nbBounce, int& pathLength)
 {
     Vector3 newColSurfaceFromLights = colSurface;
     Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
@@ -260,32 +259,45 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
             }
 
             newColSurfaceFromLights = (newColSurfaceFromLights * sphere_i.GetAlbedo()) / nbRays;
-
             Vector3 colSurfaceFromSpheres = Vector3(0, 0, 0);
-            Vector3 rpos = GetRandomPointOnSphereWithDensity(sphere_i);
-            Vector3 p = intersectPoint;
-            Vector3 dir = GetNormalizedDirectionFromPoints(p, rpos);
-            p = p + dir * 0.01f;
-            Ray ray = Ray(p, dir);
-            int bouncesOnMirrors = 0;
-            Vector3 colOnSphereJ = GetLightIntensityOnSurface(Vector3(0, 0, 0), ray, spheres, nbSphere, lights, nbLights, bouncesOnMirrors);
 
-            Sphere sphere_j = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
-            float n2 = GetMinRayToSpheres(ray, sphere_j, spheres, nbSphere);
-
-            if (n2 != INFINITY)
+            for (int i = 0; i < 3; i++)
             {
-                Vector3 pj = intersectPoint + dir * n2;
+                if (pathLength >= 3)
+                {
+                    break;
+                }
 
-                Vector3 norm_i = GetNormalizedDirectionFromPoints(p, sphere_i.GetCenter());
-                float angle_i = GetAngleFrom(norm_i, dir);
+                Vector3 rpos = GetRandomPointOnSphereWithDensity(sphere_i);
+                Vector3 p = intersectPoint;
+                Vector3 dir = GetNormalizedDirectionFromPoints(p, rpos);
+                p = p + dir * 0.1f;
+                Ray ray = Ray(p, dir);
+                int bouncesOnMirrors = 0;
+                Vector3 colOnSphereJ = GetLightIntensityOnSurface(Vector3(0, 0, 0), ray, spheres, nbSphere, lights, nbLights, bouncesOnMirrors, pathLength);
 
-                Vector3 norm_j = GetNormalizedDirectionFromPoints(pj, sphere_j.GetCenter());
-                float angle_j = GetAngleFrom(norm_j, dir * -1);
+                Sphere sphere_j = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
+                float n2 = GetMinRayToSpheres(ray, sphere_j, spheres, nbSphere);
 
-                colOnSphereJ = (colOnSphereJ * angle_i * angle_j) / (n2 * n2);
+                if (n2 != INFINITY)
+                {
+                    Vector3 pj = intersectPoint + dir * n2;
 
-                colSurfaceFromSpheres = sphere_i.GetAlbedo() * colOnSphereJ;
+                    Vector3 norm_i = GetNormalizedDirectionFromPoints(p, sphere_i.GetCenter());
+                    float angle_i = GetAngleFrom(norm_i, dir);
+
+                    Vector3 norm_j = GetNormalizedDirectionFromPoints(pj, sphere_j.GetCenter());
+                    float angle_j = GetAngleFrom(norm_j, dir * -1);
+
+                    if (colOnSphereJ.length() >= 10000)
+                    {
+                        std::cout << p << " " << pj << " " << colOnSphereJ << " ||||| ";
+                    }
+                    colOnSphereJ = (colOnSphereJ * angle_i * angle_j) / (n2 * n2);
+
+                    colSurfaceFromSpheres = colSurfaceFromSpheres + (sphere_i.GetAlbedo() * colOnSphereJ);
+                    pathLength++;
+                }
             }
 
             newColSurfaceFromLights = newColSurfaceFromLights + colSurfaceFromSpheres;
@@ -301,7 +313,7 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
             Ray ray = Ray(p, r);
 
             nbBounce++;
-            return GetLightIntensityOnSurface(newColSurfaceFromLights, ray, spheres, nbSphere, lights, nbLights, nbBounce);
+            return GetLightIntensityOnSurface(newColSurfaceFromLights, ray, spheres, nbSphere, lights, nbLights, nbBounce, pathLength);
         }
     }
 
@@ -334,7 +346,7 @@ int main()
     Light l4 = Light(Vector3(2000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
     Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 200000000.0f, 10.0f);
     Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 200000000.0f, 10.0f);
-    Light lights[nbLights]{l1, l2, l3, l4, l5, l6, l7};
+    Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7 };
 
     const char* filename = "test.png";
 
@@ -357,7 +369,8 @@ int main()
 
                 Ray rayToSphere = Ray(pixelPoint, dirRay);
                 int nbBounce = 0;
-                colSurface = colSurface + GetLightIntensityOnSurface(Vector3(0,0,0), rayToSphere, spheres, nbSpheres, lights, nbLights, nbBounce);
+                int pathLength = 0;
+                colSurface = colSurface + GetLightIntensityOnSurface(Vector3(0,0,0), rayToSphere, spheres, nbSpheres, lights, nbLights, nbBounce, pathLength);
             }
             colSurface = colSurface / nbRaysPerPixels;
 
