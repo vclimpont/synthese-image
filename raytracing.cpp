@@ -137,7 +137,6 @@ float GetMinRayToSpheres(Ray ray, Sphere& sphere_i, Sphere spheres[], int nbSphe
     return rayDistMin;
 }
 
-
 Vector3 GetReflectDirection(Vector3 dirRay, Vector3 norm)
 {
     Vector3 r = norm * Vector3::dot(dirRay * -1.0f, norm) * 2 + dirRay;
@@ -259,7 +258,7 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
             }
 
             newColSurfaceFromLights = (newColSurfaceFromLights * sphere_i.GetAlbedo()) / nbRays;
-            Vector3 colSurfaceFromSpheres = Vector3(0, 0, 0);
+            /*Vector3 colSurfaceFromSpheres = Vector3(0, 0, 0);
 
             for (int i = 0; i < 3; i++)
             {
@@ -300,7 +299,7 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
                 }
             }
 
-            newColSurfaceFromLights = newColSurfaceFromLights + colSurfaceFromSpheres;
+            newColSurfaceFromLights = newColSurfaceFromLights + colSurfaceFromSpheres;*/
         }
         else if(nbBounce < 10)
         {
