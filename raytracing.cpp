@@ -1,8 +1,10 @@
 #define _USE_MATH_DEFINES
 #include "ray.cpp"
-#include "sphere.cpp"
+#include "sphere.h"
 #include "Light.cpp"
 #include "lodepng.h"
+#include "BoxMaker.h"
+#include "Box.h"
 #include <iostream>
 #include <random>
 using namespace std;
@@ -321,62 +323,72 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
 
 int main()
 {
+    BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(1, 1, 1));
+    const int nbSpheres = 2;
+    Sphere s1 = Sphere(Vector3(0.2f, 0.7f, 0.5f), 0.01f, Vector3(0, 0, 0), true);
+    Sphere s2 = Sphere(Vector3(0.25f, 0.75f, 0.5f), 0.01f, Vector3(0, 0, 0), true);
+    Sphere spheres[nbSpheres]{ s1, s2 };
+    bm.AddSpheresToInitialBox(spheres, nbSpheres);
+    bm.SplitBox(&bm.initialBox);
+    bm.DisplaySpheresOfBox(bm.initialBox);
+
+
     //Vector3 dirRay = Vector3(0, 0, 1);
-    Vector3 persPoint = Vector3(512, 512, -600);
-    const int nbRaysPerPixels = 1;
-    const float randomOffsetPerPixels = 1;
-         
-    const int nbSpheres = 8;
-    Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true); // green sphere
-    Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true); // red sphere
-    Sphere s3 = Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true); // yellow sphere
-    Sphere s4 = Sphere(Vector3(30, 650, 400), 200.0f, Vector3(1, 1, 1), false); // mirror left
-    Sphere s5 = Sphere(Vector3(1000, 650, 400), 200.0f, Vector3(1, 1, 1), false); // mirror right
-    Sphere s6 = Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false);   // mirror mid
-    Sphere s7 = Sphere(Vector3(512, 11100, 300), 10000.0f, Vector3(1, 1, 1), true); // floor
-    Sphere s8 = Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true); // background
-    Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
+    //Vector3 persPoint = Vector3(512, 512, -600);
+    //const int nbRaysPerPixels = 1;
+    //const float randomOffsetPerPixels = 1;
+    //     
+    //const int nbSpheres = 8;
+    //Sphere s1 = Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true); // green sphere
+    //Sphere s2 = Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true); // red sphere
+    //Sphere s3 = Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true); // yellow sphere
+    //Sphere s4 = Sphere(Vector3(30, 650, 400), 200.0f, Vector3(1, 1, 1), false); // mirror left
+    //Sphere s5 = Sphere(Vector3(1000, 650, 400), 200.0f, Vector3(1, 1, 1), false); // mirror right
+    //Sphere s6 = Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false);   // mirror mid
+    //Sphere s7 = Sphere(Vector3(512, 11100, 300), 10000.0f, Vector3(1, 1, 1), true); // floor
+    //Sphere s8 = Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true); // background
+    //Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
 
-    const int nbLights = 7;
-    Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f);
-    Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f);
-    Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 100000000.0f, 20.0f);
-    Light l3 = Light(Vector3(-1000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
-    Light l4 = Light(Vector3(2000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
-    Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 200000000.0f, 10.0f);
-    Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 200000000.0f, 10.0f);
-    Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7 };
+    //const int nbLights = 7;
+    //Light l1 = Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f);
+    //Light l2 = Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f);
+    //Light l7 = Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 100000000.0f, 20.0f);
+    //Light l3 = Light(Vector3(-1000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
+    //Light l4 = Light(Vector3(2000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f);
+    //Light l5 = Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 200000000.0f, 10.0f);
+    //Light l6 = Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 200000000.0f, 10.0f);
+    //Light lights[nbLights]{ l1, l2, l3, l4, l5, l6, l7 };
 
-    const char* filename = "test.png";
+    //const char* filename = "test.png";
 
-    //generate some image
-    unsigned width = 1024, height = 1024;
-    std::vector<unsigned char> image;
-    image.resize(width * height * 4);
+    ////generate some image
+    //unsigned width = 1024, height = 1024;
+    //std::vector<unsigned char> image;
+    //image.resize(width * height * 4);
 
-    for (unsigned y = 0; y < height; y++) {
-        for (unsigned x = 0; x < width; x++) {
+    //for (unsigned y = 0; y < height; y++) {
+    //    for (unsigned x = 0; x < width; x++) {
 
-            int index = 4 * width * y + 4 * x;
-            Vector3 colSurface = Vector3(0, 0, 0);
+    //        int index = 4 * width * y + 4 * x;
+    //        Vector3 colSurface = Vector3(0, 0, 0);
 
-            for (int i = 0; i < nbRaysPerPixels; i++)
-            {
-                Vector3 randomOffset = Vector3(GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), 0);
-                Vector3 pixelPoint = Vector3(x, y, 0);// +randomOffset;
-                Vector3 dirRay = GetNormalizedDirectionFromPoints(pixelPoint, persPoint);
+    //        for (int i = 0; i < nbRaysPerPixels; i++)
+    //        {
+    //            Vector3 randomOffset = Vector3(GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), GetRandomFloatBetween(-randomOffsetPerPixels, randomOffsetPerPixels), 0);
+    //            Vector3 pixelPoint = Vector3(x, y, 0);// +randomOffset;
+    //            Vector3 dirRay = GetNormalizedDirectionFromPoints(pixelPoint, persPoint);
 
-                Ray rayToSphere = Ray(pixelPoint, dirRay);
-                int nbBounce = 0;
-                int pathLength = 0;
-                colSurface = colSurface + GetLightIntensityOnSurface(Vector3(0,0,0), rayToSphere, spheres, nbSpheres, lights, nbLights, nbBounce, pathLength);
-            }
-            colSurface = colSurface / nbRaysPerPixels;
+    //            Ray rayToSphere = Ray(pixelPoint, dirRay);
+    //            int nbBounce = 0;
+    //            int pathLength = 0;
+    //            colSurface = colSurface + GetLightIntensityOnSurface(Vector3(0,0,0), rayToSphere, spheres, nbSpheres, lights, nbLights, nbBounce, pathLength);
+    //        }
+    //        colSurface = colSurface / nbRaysPerPixels;
 
-            Vector3 clampedColor = ClampColor(colSurface);
-            ChangeColor(image, index, clampedColor.x, clampedColor.y, clampedColor.z, 255);
-        }
-    }
+    //        Vector3 clampedColor = ClampColor(colSurface);
+    //        ChangeColor(image, index, clampedColor.x, clampedColor.y, clampedColor.z, 255);
+    //    }
+    //}
 
-    encodeOneStep(filename, image, width, height);
+    //encodeOneStep(filename, image, width, height);
 }

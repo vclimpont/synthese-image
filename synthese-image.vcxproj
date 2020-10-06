@@ -148,7 +148,10 @@
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Box.h" />
+    <ClInclude Include="BoxMaker.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="vector3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
