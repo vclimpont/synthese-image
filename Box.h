@@ -10,7 +10,7 @@ using namespace std;
 class Box {
 public:
 	Box* parentBox;
-	std::vector<Box> boxes;
+	std::vector<Box *> boxes;
 	std::vector<Sphere> spheres;
 	Vector3 minCoords;
 	Vector3 maxCoords;
@@ -61,7 +61,7 @@ public:
 		return v * v;
 	}
 
-	void addBox(Box box)
+	void addBox(Box* box)
 	{
 		boxes.push_back(box);
 	}
