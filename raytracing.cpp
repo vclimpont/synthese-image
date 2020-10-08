@@ -324,16 +324,16 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
 int main()
 {
     BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(1, 1, 1));
-    const int nbSpheres = 8;
-    Sphere s1 = Sphere(Vector3(0.2f, 0.87f, 0.5f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere s2 = Sphere(Vector3(0.25f, 0.45f, 0.4f), 0.01f, Vector3(0, 0, 0), true);
+    const int nbSpheres = 2;
+    Sphere s1 = Sphere(Vector3(0.5f, 0.5f, 0.5f), 0.1f, Vector3(0, 0, 0), true);
+    Sphere s2 = Sphere(Vector3(0, 0, 0), 0.01f, Vector3(0, 0, 0), true);
     Sphere s3 = Sphere(Vector3(0.33f, 0.22f, 0.21f), 0.01f, Vector3(0, 0, 0), true);
     Sphere s4 = Sphere(Vector3(0.54f, 0.12f, 0.23f), 0.01f, Vector3(0, 0, 0), true);
     Sphere s5 = Sphere(Vector3(0.75f, 0.08f, 0.57f), 0.01f, Vector3(0, 0, 0), true);
     Sphere s6 = Sphere(Vector3(0.10f, 0.94f, 0.49f), 0.01f, Vector3(0, 0, 0), true);
     Sphere s7 = Sphere(Vector3(0.40f, 0.64f, 0.68f), 0.01f, Vector3(0, 0, 0), true);
     Sphere s8 = Sphere(Vector3(0.89f, 0.36f, 0.21f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
+    Sphere spheres[nbSpheres]{ s1, s2 };
     bm.AddSpheresToInitialBox(spheres, nbSpheres);
     bm.SplitBox(&bm.initialBox);
     bm.DisplaySpheresOfBox(&bm.initialBox);
