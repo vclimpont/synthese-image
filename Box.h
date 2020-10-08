@@ -73,16 +73,16 @@ public:
 
 	float GetHalfX()
 	{
-		return (maxCoords.x - minCoords.x) / 2;
+		return (maxCoords.x + minCoords.x) / 2;
 	}
 
 	float GetHalfY()
 	{
-		return (maxCoords.y - minCoords.y) / 2;
+		return (maxCoords.y + minCoords.y) / 2;
 	}
 
 	float GetHalfZ()
 	{
-		return (maxCoords.z - minCoords.z) / 2;
+		return (maxCoords.z + minCoords.z) / 2;
 	}
 };

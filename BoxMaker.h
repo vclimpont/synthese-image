@@ -33,7 +33,6 @@ public:
 	{
 		if (boxToSplit->spheres.size() > 1)
 		{
-			std::cout << boxToSplit->minCoords << " " << boxToSplit->maxCoords << " ---- ";
 			Vector3 minCoords1 = boxToSplit->minCoords;
 			Vector3 maxCoords1 = Vector3(boxToSplit->GetHalfX(), boxToSplit->GetHalfY(), boxToSplit->maxCoords.z);
 			Box box1 = CreateBox(minCoords1, maxCoords1, boxToSplit);
@@ -58,6 +57,8 @@ public:
 			box4.FindSpheresInTheBox();
 			boxToSplit->addBox(box4);
 
+			std::cout << "---- boxToSplit ---- " << boxToSplit->minCoords << " " << boxToSplit->maxCoords << " " << boxToSplit->boxes.size() << " ---- ";
+
 			for (Box b : boxToSplit->boxes)
 			{
 				SplitBox(&b);
@@ -65,13 +66,13 @@ public:
 		}
 	}
 
-	void DisplaySpheresOfBox(Box boxToDisplay)
+	void DisplaySpheresOfBox(Box* boxToDisplay)
 	{
-		std::cout << boxToDisplay.minCoords << " " << boxToDisplay.spheres.size() << "  |||||  ";
+		std::cout << boxToDisplay->minCoords << " " << boxToDisplay->spheres.size() << " " << boxToDisplay->boxes.size() << "  |||||  ";
 
-		for (Box b : boxToDisplay.boxes)
+		for (Box b : boxToDisplay->boxes)
 		{
-			DisplaySpheresOfBox(b);
+			DisplaySpheresOfBox(&b);
 		}
 	}
 
