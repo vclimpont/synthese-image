@@ -12,6 +12,36 @@ using namespace std;
 std::random_device rd;
 std::mt19937 e2(rd());
 
+bool hit_box(Box box, Ray ray, float& t) {
+    Vector3 dirfrac = Vector3(1 / ray.GetDirection().x, 1 / ray.GetDirection().y, 1 / ray.GetDirection().z);
+    float t1 = (box.minCoords.x - ray.GetPosition().x) * dirfrac.x;
+    float t2 = (box.maxCoords.x - ray.GetPosition().x) * dirfrac.x;
+    float t3 = (box.minCoords.y - ray.GetPosition().y) * dirfrac.y;
+    float t4 = (box.maxCoords.y - ray.GetPosition().y) * dirfrac.y;
+    float t5 = (box.minCoords.z - ray.GetPosition().z) * dirfrac.z;
+    float t6 = (box.maxCoords.z - ray.GetPosition().z) * dirfrac.z;
+
+    float tmin = max(max(min(t1, t2), min(t3, t4)), min(t5, t6));
+    float tmax = min(min(max(t1, t2), max(t3, t4)), max(t5, t6));
+    // if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
+    if (tmax < 0)
+    {
+        t = tmax;
+        return false;
+    }
+
+    // if tmin > tmax, ray doesn't intersect AABB
+    if (tmin > tmax)
+    {
+        t = tmax;
+        return false;
+    }
+
+    t = tmin;
+    std::cout << box.minCoords << " " << box.maxCoords << " " << t << " ----- ";
+    return true;
+}
+
 float hit_sphere(Ray ray, Sphere sphere)
 {
     Vector3 oc = ray.GetPosition() - sphere.GetCenter();
@@ -89,6 +119,19 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
     //if there's an error, display it
     if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+}
+
+Box CastRayToBox(Ray ray, Box box, float& t)
+{
+    for (Box* childBox : box.boxes)
+    {
+        if (hit_box(*childBox, ray, t))
+        {
+            return CastRayToBox(ray, *childBox, t);
+        }
+    }
+
+    return box;
 }
 
 float CastRayToSphere(Ray ray, Sphere s)
@@ -324,7 +367,7 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
 int main()
 {
     BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(1, 1, 1));
-    const int nbSpheres = 2;
+    const int nbSpheres = 8;
     Sphere s1 = Sphere(Vector3(0.5f, 0.5f, 0.5f), 0.1f, Vector3(0, 0, 0), true);
     Sphere s2 = Sphere(Vector3(0, 0, 0), 0.01f, Vector3(0, 0, 0), true);
     Sphere s3 = Sphere(Vector3(0.33f, 0.22f, 0.21f), 0.01f, Vector3(0, 0, 0), true);
@@ -333,11 +376,15 @@ int main()
     Sphere s6 = Sphere(Vector3(0.10f, 0.94f, 0.49f), 0.01f, Vector3(0, 0, 0), true);
     Sphere s7 = Sphere(Vector3(0.40f, 0.64f, 0.68f), 0.01f, Vector3(0, 0, 0), true);
     Sphere s8 = Sphere(Vector3(0.89f, 0.36f, 0.21f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere spheres[nbSpheres]{ s1, s2 };
+    Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
     bm.AddSpheresToInitialBox(spheres, nbSpheres);
     bm.SplitBox(&bm.initialBox);
     bm.DisplaySpheresOfBox(&bm.initialBox);
 
+    float t = 0;
+    Ray ray = Ray(Vector3(0.33f, 0.22f, -5), Vector3(0, 0, 1));
+    Box b = CastRayToBox(ray, bm.initialBox, t);
+    std::cout << b.minCoords << " " << b.maxCoords;
 
     //Vector3 dirRay = Vector3(0, 0, 1);
     //Vector3 persPoint = Vector3(512, 512, -600);
