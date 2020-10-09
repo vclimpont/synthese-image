@@ -21,41 +21,78 @@ public:
 		initialBox = Box(minCoords, maxCoords, NULL);
 	}
 
-	void AddSpheresToInitialBox(Sphere spheres[], int nbSpheres)
+	void AddSpheresToInitialBox(std::vector<Sphere> spheres)
 	{
-		for (int i = 0; i < nbSpheres; i++)
+		for (Sphere s : spheres)
 		{
-			initialBox.addSphere(spheres[i]);
+			initialBox.addSphere(s);
 		}
+	}
+
+	void SplitBoxOfLargestAxis(Box* boxToSplit, int maxCoord)
+	{
+		Vector3 minCoords1 = boxToSplit->minCoords;
+		Vector3 maxCoords1 = boxToSplit->maxCoords;
+
+		Vector3 minCoords2 = boxToSplit->minCoords;
+		Vector3 maxCoords2 = boxToSplit->maxCoords;
+
+		switch (maxCoord)
+		{
+		case 0:
+			maxCoords1.x = boxToSplit->GetHalfX();
+			minCoords2.x = boxToSplit->GetHalfX();
+			break;
+		case 1:
+			maxCoords1.y = boxToSplit->GetHalfY();
+			minCoords2.y = boxToSplit->GetHalfY();
+			break;
+		case 2:
+			maxCoords1.z = boxToSplit->GetHalfZ();
+			minCoords2.z = boxToSplit->GetHalfZ();
+			break;
+		}
+
+		Box* box1 = CreateBox(minCoords1, maxCoords1, boxToSplit);
+		box1->FindSpheresInTheBox();
+		boxToSplit->addBox(box1);
+
+		Box* box2 = CreateBox(minCoords2, maxCoords2, boxToSplit);
+		box2->FindSpheresInTheBox();
+		boxToSplit->addBox(box2);
 	}
 
 	void SplitBox(Box* boxToSplit)
 	{
 		if (boxToSplit->spheres.size() > 1)
 		{
-			Vector3 minCoords1 = boxToSplit->minCoords;
-			Vector3 maxCoords1 = Vector3(boxToSplit->GetHalfX(), boxToSplit->GetHalfY(), boxToSplit->maxCoords.z);
-			Box* box1 = CreateBox(minCoords1, maxCoords1, boxToSplit);
-			box1->FindSpheresInTheBox();
-			boxToSplit->addBox(box1);
+			int maxCoord = boxToSplit->GetMaxCoord();
 
-			Vector3 minCoords2 = Vector3(boxToSplit->GetHalfX(), boxToSplit->minCoords.y, boxToSplit->minCoords.z);
-			Vector3 maxCoords2 = Vector3(boxToSplit->maxCoords.x, boxToSplit->GetHalfY(), boxToSplit->maxCoords.z);
-			Box* box2 = CreateBox(minCoords2, maxCoords2, boxToSplit);
-			box2->FindSpheresInTheBox();
-			boxToSplit->addBox(box2);
+			SplitBoxOfLargestAxis(boxToSplit, maxCoord);
 
-			Vector3 minCoords3 = Vector3(boxToSplit->minCoords.x, boxToSplit->GetHalfY(), boxToSplit->minCoords.z);
-			Vector3 maxCoords3 = Vector3(boxToSplit->GetHalfX(), boxToSplit->maxCoords.y, boxToSplit->maxCoords.z);
-			Box* box3 = CreateBox(minCoords3, maxCoords3, boxToSplit);
-			box3->FindSpheresInTheBox();
-			boxToSplit->addBox(box3);
+			//Vector3 minCoords1 = boxToSplit->minCoords;
+			//Vector3 maxCoords1 = Vector3(boxToSplit->GetHalfX(), boxToSplit->GetHalfY(), boxToSplit->maxCoords.z);
+			//Box* box1 = CreateBox(minCoords1, maxCoords1, boxToSplit);
+			//box1->FindSpheresInTheBox();
+			//boxToSplit->addBox(box1);
 
-			Vector3 minCoords4 = Vector3(boxToSplit->GetHalfX(), boxToSplit->GetHalfY(), boxToSplit->minCoords.z);
-			Vector3 maxCoords4 = boxToSplit->maxCoords;
-			Box* box4 = CreateBox(minCoords4, maxCoords4, boxToSplit);
-			box4->FindSpheresInTheBox();
-			boxToSplit->addBox(box4);
+			//Vector3 minCoords2 = Vector3(boxToSplit->GetHalfX(), boxToSplit->minCoords.y, boxToSplit->minCoords.z);
+			//Vector3 maxCoords2 = Vector3(boxToSplit->maxCoords.x, boxToSplit->GetHalfY(), boxToSplit->maxCoords.z);
+			//Box* box2 = CreateBox(minCoords2, maxCoords2, boxToSplit);
+			//box2->FindSpheresInTheBox();
+			//boxToSplit->addBox(box2);
+
+			//Vector3 minCoords3 = Vector3(boxToSplit->minCoords.x, boxToSplit->GetHalfY(), boxToSplit->minCoords.z);
+			//Vector3 maxCoords3 = Vector3(boxToSplit->GetHalfX(), boxToSplit->maxCoords.y, boxToSplit->maxCoords.z);
+			//Box* box3 = CreateBox(minCoords3, maxCoords3, boxToSplit);
+			//box3->FindSpheresInTheBox();
+			//boxToSplit->addBox(box3);
+
+			//Vector3 minCoords4 = Vector3(boxToSplit->GetHalfX(), boxToSplit->GetHalfY(), boxToSplit->minCoords.z);
+			//Vector3 maxCoords4 = boxToSplit->maxCoords;
+			//Box* box4 = CreateBox(minCoords4, maxCoords4, boxToSplit);
+			//box4->FindSpheresInTheBox();
+			//boxToSplit->addBox(box4);
 
 			std::cout << "---- boxToSplit ---- " << boxToSplit->minCoords << " " << boxToSplit->maxCoords << " " << boxToSplit->boxes.size() << " ---- ";
 
@@ -72,7 +109,7 @@ public:
 
 		for (Box* b : boxToDisplay->boxes)
 		{
-				DisplaySpheresOfBox(b);
+			DisplaySpheresOfBox(b);
 		}
 	}
 

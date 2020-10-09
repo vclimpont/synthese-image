@@ -38,7 +38,7 @@ bool hit_box(Box box, Ray ray, float& t) {
     }
 
     t = tmin;
-    std::cout << box.minCoords << " " << box.maxCoords << " " << t << " ----- ";
+    //std::cout << box.minCoords << " " << box.maxCoords << " " << t << " ----- ";
     return true;
 }
 
@@ -367,22 +367,30 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, Sphere s
 int main()
 {
     BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(1, 1, 1));
-    const int nbSpheres = 8;
-    Sphere s1 = Sphere(Vector3(0.5f, 0.5f, 0.5f), 0.1f, Vector3(0, 0, 0), true);
-    Sphere s2 = Sphere(Vector3(0, 0, 0), 0.01f, Vector3(0, 0, 0), true);
-    Sphere s3 = Sphere(Vector3(0.33f, 0.22f, 0.21f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere s4 = Sphere(Vector3(0.54f, 0.12f, 0.23f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere s5 = Sphere(Vector3(0.75f, 0.08f, 0.57f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere s6 = Sphere(Vector3(0.10f, 0.94f, 0.49f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere s7 = Sphere(Vector3(0.40f, 0.64f, 0.68f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere s8 = Sphere(Vector3(0.89f, 0.36f, 0.21f), 0.01f, Vector3(0, 0, 0), true);
-    Sphere spheres[nbSpheres]{ s1, s2, s3, s4, s5, s6, s7, s8 };
-    bm.AddSpheresToInitialBox(spheres, nbSpheres);
+    std::vector<Sphere> spheres;
+    //for (int i = 0; i < 2; i++)
+    //{
+    //    float x = GetRandomFloatBetween(0, 1);
+    //    float y = GetRandomFloatBetween(0, 1);
+    //    float z = GetRandomFloatBetween(0, 1);
+    //    float a = GetRandomFloatBetween(0, 1);
+    //    Sphere s = Sphere(Vector3(x, y, z), 5, Vector3(a, a, a), true);
+    //    spheres.push_back(s);
+    //}
+    spheres.push_back(Sphere(Vector3(0.2f, 0.2f, 0.5f), 0.01f, Vector3(0, 0, 0), true));
+    spheres.push_back(Sphere(Vector3(0.7f, 0.7f, 0.5f), 0.01f, Vector3(0, 0, 0), true));
+    spheres.push_back(Sphere(Vector3(0.1f, 0.45f, 0.8f), 0.01f, Vector3(0, 0, 0), true));
+    spheres.push_back(Sphere(Vector3(0.84f, 0.64f, 0.1f), 0.01f, Vector3(0, 0, 0), true));
+    spheres.push_back(Sphere(Vector3(0.12f, 0.34f, 0.22f), 0.01f, Vector3(0, 0, 0), true));
+    spheres.push_back(Sphere(Vector3(0.81f, 0.89f, 0.45f), 0.01f, Vector3(0, 0, 0), true));
+    //spheres.push_back(Sphere(Vector3(0.24f, 0.41f, 0.23f), 0.01f, Vector3(0, 0, 0), true));
+    //spheres.push_back(Sphere(Vector3(0.56f, 0.64f, 0.34f), 0.01f, Vector3(0, 0, 0), true));
+    bm.AddSpheresToInitialBox(spheres);
     bm.SplitBox(&bm.initialBox);
     bm.DisplaySpheresOfBox(&bm.initialBox);
 
     float t = 0;
-    Ray ray = Ray(Vector3(0.33f, 0.22f, -5), Vector3(0, 0, 1));
+    Ray ray = Ray(Vector3(0.1f, 0.45f, -5), Vector3(0, 0, 1));
     Box b = CastRayToBox(ray, bm.initialBox, t);
     std::cout << b.minCoords << " " << b.maxCoords;
 

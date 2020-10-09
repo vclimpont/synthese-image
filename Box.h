@@ -85,4 +85,24 @@ public:
 	{
 		return (maxCoords.z + minCoords.z) / 2;
 	}
+
+	int GetMaxCoord()
+	{
+		float dstX = maxCoords.x - minCoords.x;
+		float dstY = maxCoords.y - minCoords.y;
+		float dstZ = maxCoords.z - minCoords.z;
+
+		if (dstX > dstY && dstX > dstZ)
+		{
+			return 0;
+		}
+		else if (dstY > dstX && dstY > dstZ)
+		{
+			return 1;
+		}
+		else if (dstZ > dstX && dstZ > dstY)
+		{
+			return 2;
+		}
+	}
 };
