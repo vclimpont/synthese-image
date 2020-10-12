@@ -127,6 +127,7 @@ Box CastRayToBox(Ray ray, Box box, float& t)
     {
         if (hit_box(*childBox, ray, t))
         {
+            std::cout << childBox->minCoords << " " << childBox->maxCoords << " ------ ";
             return CastRayToBox(ray, *childBox, t);
         }
     }
@@ -366,14 +367,16 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, std::vec
 
 int main()
 {
-    BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(512, 512, 512));
+    unsigned width = 512, height = 512;
+
+    BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(width, width, width));
     std::vector<Sphere> spheres;
     std::vector<Light> lights;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
-        float x = GetRandomFloatBetween(0, 512);
-        float y = GetRandomFloatBetween(0, 512);
-        float z = GetRandomFloatBetween(0, 512);
+        float x = GetRandomFloatBetween(0, width);
+        float y = GetRandomFloatBetween(0, width);
+        float z = GetRandomFloatBetween(0, width);
         float r = GetRandomFloatBetween(0, 1);
         float g = GetRandomFloatBetween(0, 1);
         float b = GetRandomFloatBetween(0, 1);
@@ -381,11 +384,12 @@ int main()
         Sphere s = Sphere(Vector3(x, y, z), rad, Vector3(r, g, b), true);
         spheres.push_back(s);
     }
-    lights.push_back(Light(Vector3(255, 255, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    lights.push_back(Light(Vector3(width / 2, width / 2, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    lights.push_back(Light(Vector3(width / 2, width / 2, width), Vector3(1, 1, 1), 30000000.0f, 0.01f));
     lights.push_back(Light(Vector3(0, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(512, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(0, 512, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(512, 512, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    lights.push_back(Light(Vector3(width, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    lights.push_back(Light(Vector3(0, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    lights.push_back(Light(Vector3(width, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
     //spheres.push_back(Sphere(Vector3(0.2f, 0.2f, 0.5f), 0.01f, Vector3(0, 0, 0), true));
     //spheres.push_back(Sphere(Vector3(0.7f, 0.7f, 0.5f), 0.01f, Vector3(0, 0, 0), true));
     //spheres.push_back(Sphere(Vector3(0.1f, 0.45f, 0.8f), 0.01f, Vector3(0, 0, 0), true));
@@ -399,19 +403,18 @@ int main()
     //bm.DisplaySpheresOfBox(&bm.initialBox);
 
     float t = 0;
-    Ray ray = Ray(Vector3(0.1f, 0.45f, -5), Vector3(0, 0, 1));
+    Ray ray = Ray(Vector3(width / 4, width / 4, 0), Vector3(0, 0, 1));
     Box b = CastRayToBox(ray, bm.initialBox, t);
     std::cout << b.minCoords << " " << b.maxCoords;
 
     Vector3 dirRay = Vector3(0, 0, 1);
-    Vector3 persPoint = Vector3(255, 255, -600);
+    Vector3 persPoint = Vector3(width / 2, width / 2, -600);
     const int nbRaysPerPixels = 1;
     const float randomOffsetPerPixels = 0.2f;
 
     const char* filename = "test.png";
 
     //generate some image
-    unsigned width = 512, height = 512;
     std::vector<unsigned char> image;
     image.resize(width * height * 4);
 
