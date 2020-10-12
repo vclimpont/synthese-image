@@ -64,7 +64,7 @@ public:
 
 	void SplitBox(Box* boxToSplit)
 	{
-		if (boxToSplit->spheres.size() > 1)
+		if (boxToSplit->spheres.size() > 3)
 		{
 			int maxCoord = boxToSplit->GetMaxCoord();
 
@@ -94,7 +94,7 @@ public:
 			//box4->FindSpheresInTheBox();
 			//boxToSplit->addBox(box4);
 
-			std::cout << "---- boxToSplit ---- " << boxToSplit->minCoords << " " << boxToSplit->maxCoords << " " << boxToSplit->boxes.size() << " ---- ";
+			//std::cout << "---- boxToSplit ---- " << boxToSplit->minCoords << " " << boxToSplit->maxCoords << " " << boxToSplit->boxes.size() << " ---- ";
 
 			for (Box* b : boxToSplit->boxes)
 			{

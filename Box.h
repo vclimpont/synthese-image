@@ -92,15 +92,15 @@ public:
 		float dstY = maxCoords.y - minCoords.y;
 		float dstZ = maxCoords.z - minCoords.z;
 
-		if (dstX > dstY && dstX > dstZ)
+		if (dstX >= dstY && dstX >= dstZ)
 		{
 			return 0;
 		}
-		else if (dstY > dstX && dstY > dstZ)
+		else if (dstY >= dstX && dstY >= dstZ)
 		{
 			return 1;
 		}
-		else if (dstZ > dstX && dstZ > dstY)
+		else if (dstZ >= dstX && dstZ >= dstY)
 		{
 			return 2;
 		}
