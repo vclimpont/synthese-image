@@ -64,7 +64,7 @@ public:
 
 	void SplitBox(Box* boxToSplit)
 	{
-		if (boxToSplit->spheres.size() > 1)
+		if (boxToSplit->spheres.size() > 5)
 		{
 			int maxCoord = boxToSplit->GetMaxCoord();
 

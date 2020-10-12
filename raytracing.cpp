@@ -11,6 +11,7 @@ using namespace std;
 
 std::random_device rd;
 std::mt19937 e2(rd());
+BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(512, 512, 512));
 
 bool hit_box(Box box, Ray ray, float& t) {
     Vector3 dirfrac = Vector3(1 / ray.GetDirection().x, 1 / ray.GetDirection().y, 1 / ray.GetDirection().z);
@@ -121,18 +122,23 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
     if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 }
 
-Box CastRayToBox(Ray ray, Box box, float& t)
+void CastRayToBox(Ray ray, Box box, float& t, std::vector<Box>& intersectBoxes)
 {
     for (Box* childBox : box.boxes)
     {
         if (hit_box(*childBox, ray, t))
         {
-            std::cout << childBox->minCoords << " " << childBox->maxCoords << " ------ ";
-            return CastRayToBox(ray, *childBox, t);
+            if (childBox->boxes.size() > 0)
+            {
+                //std::cout << childBox->minCoords << " " << childBox->maxCoords << " ------ ";
+                CastRayToBox(ray, *childBox, t, intersectBoxes);
+            }
+            else
+            {
+                intersectBoxes.push_back(*childBox);
+            }
         }
     }
-
-    return box;
 }
 
 float CastRayToSphere(Ray ray, Sphere s)
@@ -266,8 +272,24 @@ float GetAngleFrom(Vector3 pa, Vector3 pb)
 Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, std::vector<Sphere> spheres, std::vector<Light> lights, int& nbBounce, int& pathLength)
 {
     Vector3 newColSurfaceFromLights = colSurface;
+    //Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
+    //float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres);
+
+    float t = 0;
+    std::vector<Box> intersectBoxes;
+    CastRayToBox(rayToSphere, bm.initialBox, t, intersectBoxes);
     Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
-    float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres);
+    Sphere sphere_d = sphere_i;
+    float n1 = INFINITY;
+    for (Box b : intersectBoxes)
+    {
+        float nd = GetMinRayToSpheres(rayToSphere, sphere_i, b.spheres);
+        if (nd < n1)
+        {
+            n1 = nd;
+            sphere_d = sphere_i;
+        }
+    }
 
     if (n1 != INFINITY)
     {
@@ -369,10 +391,10 @@ int main()
 {
     unsigned width = 512, height = 512;
 
-    BoxMaker bm = BoxMaker(Vector3(0, 0, 0), Vector3(width, width, width));
+    bm = BoxMaker(Vector3(0, 0, 0), Vector3(width, width, width));
     std::vector<Sphere> spheres;
     std::vector<Light> lights;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10000; i++)
     {
         float x = GetRandomFloatBetween(0, width);
         float y = GetRandomFloatBetween(0, width);
@@ -380,7 +402,7 @@ int main()
         float r = GetRandomFloatBetween(0, 1);
         float g = GetRandomFloatBetween(0, 1);
         float b = GetRandomFloatBetween(0, 1);
-        float rad = GetRandomFloatBetween(10, 30);
+        float rad = GetRandomFloatBetween(5, 8);
         Sphere s = Sphere(Vector3(x, y, z), rad, Vector3(r, g, b), true);
         spheres.push_back(s);
     }
@@ -390,22 +412,31 @@ int main()
     lights.push_back(Light(Vector3(width, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
     lights.push_back(Light(Vector3(0, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
     lights.push_back(Light(Vector3(width, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    //spheres.push_back(Sphere(Vector3(0.2f, 0.2f, 0.5f), 0.01f, Vector3(0, 0, 0), true));
-    //spheres.push_back(Sphere(Vector3(0.7f, 0.7f, 0.5f), 0.01f, Vector3(0, 0, 0), true));
-    //spheres.push_back(Sphere(Vector3(0.1f, 0.45f, 0.8f), 0.01f, Vector3(0, 0, 0), true));
-    //spheres.push_back(Sphere(Vector3(0.84f, 0.64f, 0.1f), 0.01f, Vector3(0, 0, 0), true));
-    //spheres.push_back(Sphere(Vector3(0.12f, 0.34f, 0.23f), 0.01f, Vector3(0, 0, 0), true));
-    //spheres.push_back(Sphere(Vector3(0.81f, 0.89f, 0.45f), 0.01f, Vector3(0, 0, 0), true));
-    //spheres.push_back(Sphere(Vector3(0.24f, 0.41f, 0.25f), 0.01f, Vector3(0, 0, 0), true));
-    //spheres.push_back(Sphere(Vector3(0.56f, 0.64f, 0.34f), 0.01f, Vector3(0, 0, 0), true));
+
     bm.AddSpheresToInitialBox(spheres);
     bm.SplitBox(&bm.initialBox);
     //bm.DisplaySpheresOfBox(&bm.initialBox);
 
-    float t = 0;
-    Ray ray = Ray(Vector3(width / 4, width / 4, 0), Vector3(0, 0, 1));
-    Box b = CastRayToBox(ray, bm.initialBox, t);
-    std::cout << b.minCoords << " " << b.maxCoords;
+    //float t = 0;
+    //Ray ray = Ray(Vector3(width / 4, width / 4, 0), Vector3(0, 0, 1));
+    //std::vector<Box> intersectBoxes;
+    //CastRayToBox(ray, bm.initialBox, t, intersectBoxes);
+    //Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
+    //Sphere sphere_d = sphere_i;
+    //float n1 = INFINITY;
+    //for (Box b : intersectBoxes)
+    //{
+    //    float nd = GetMinRayToSpheres(ray, sphere_i, b.spheres);
+    //    if (nd < n1)
+    //    {
+    //        n1 = nd;
+    //        sphere_d = sphere_i;
+    //    }
+    //}
+    //for (Box b : intersectBoxes)
+    //{
+    //    std::cout << b.minCoords << " " << b.maxCoords << " ------ ";
+    //}
 
     Vector3 dirRay = Vector3(0, 0, 1);
     Vector3 persPoint = Vector3(width / 2, width / 2, -600);
@@ -433,6 +464,7 @@ int main()
                 Ray rayToSphere = Ray(pixelPoint, dirRay);
                 int nbBounce = 0;
                 int pathLength = 0;
+
                 colSurface = colSurface + GetLightIntensityOnSurface(Vector3(0, 0, 0), rayToSphere, spheres, lights, nbBounce, pathLength);
             }
             colSurface = colSurface / nbRaysPerPixels;
