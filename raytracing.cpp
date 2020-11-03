@@ -272,24 +272,24 @@ float GetAngleFrom(Vector3 pa, Vector3 pb)
 Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, std::vector<Sphere> spheres, std::vector<Light> lights, int& nbBounce, int& pathLength)
 {
     Vector3 newColSurfaceFromLights = colSurface;
-    //Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
-    //float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres);
-
-    float t = 0;
-    std::vector<Box> intersectBoxes;
-    CastRayToBox(rayToSphere, bm.initialBox, t, intersectBoxes);
     Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
-    Sphere sphere_d = sphere_i;
-    float n1 = INFINITY;
-    for (Box b : intersectBoxes)
-    {
-        float nd = GetMinRayToSpheres(rayToSphere, sphere_i, b.spheres);
-        if (nd < n1)
-        {
-            n1 = nd;
-            sphere_d = sphere_i;
-        }
-    }
+    float n1 = GetMinRayToSpheres(rayToSphere, sphere_i, spheres);
+
+    //float t = 0;
+    //std::vector<Box> intersectBoxes;
+    //CastRayToBox(rayToSphere, bm.initialBox, t, intersectBoxes);
+    //Sphere sphere_i = Sphere(Vector3(0, 0, 0), 0, Vector3(0, 0, 0), true);
+    //Sphere sphere_d = sphere_i;
+    //float n1 = INFINITY;
+    //for (Box b : intersectBoxes)
+    //{
+    //    float nd = GetMinRayToSpheres(rayToSphere, sphere_i, b.spheres);
+    //    if (nd < n1)
+    //    {
+    //        n1 = nd;
+    //        sphere_d = sphere_i;
+    //    }
+    //}
 
     if (n1 != INFINITY)
     {
@@ -389,32 +389,49 @@ Vector3 GetLightIntensityOnSurface(Vector3 colSurface, Ray rayToSphere, std::vec
 
 int main()
 {
-    unsigned width = 512, height = 512;
+    unsigned width = 1024, height = 1024;
 
     bm = BoxMaker(Vector3(0, 0, 0), Vector3(width, width, width));
     std::vector<Sphere> spheres;
     std::vector<Light> lights;
-    for (int i = 0; i < 10000; i++)
-    {
-        float x = GetRandomFloatBetween(0, width);
-        float y = GetRandomFloatBetween(0, width);
-        float z = GetRandomFloatBetween(0, width);
-        float r = GetRandomFloatBetween(0, 1);
-        float g = GetRandomFloatBetween(0, 1);
-        float b = GetRandomFloatBetween(0, 1);
-        float rad = GetRandomFloatBetween(5, 8);
-        Sphere s = Sphere(Vector3(x, y, z), rad, Vector3(r, g, b), true);
-        spheres.push_back(s);
-    }
-    lights.push_back(Light(Vector3(width / 2, width / 2, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(width / 2, width / 2, width), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(0, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(width, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(0, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
-    lights.push_back(Light(Vector3(width, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    spheres.push_back(Sphere(Vector3(200, 200, 200), 150.0f, Vector3(0, 1, 0), true)); // green sphere
+    spheres.push_back(Sphere(Vector3(814, 200, 200), 150.0f, Vector3(1, 0, 0), true)); // red sphere
+    spheres.push_back(Sphere(Vector3(512, 200, 200), 100.0f, Vector3(1, 1, 0), true)); // yellow sphere
+    spheres.push_back(Sphere(Vector3(30, 650, 400), 200.0f, Vector3(1, 1, 1), false)); // mirror left
+    spheres.push_back(Sphere(Vector3(1000, 650, 400), 200.0f, Vector3(1, 1, 1), false)); // mirror right
+    spheres.push_back(Sphere(Vector3(512, 600, 1000), 450.0f, Vector3(1, 1, 1), false));   // mirror mid
+    spheres.push_back(Sphere(Vector3(512, 11100, 300), 10000.0f, Vector3(1, 1, 1), true)); // floor
+    spheres.push_back(Sphere(Vector3(512, 512, 12000), 10000.0f, Vector3(0, 1, 1), true)); // background
 
-    bm.AddSpheresToInitialBox(spheres);
-    bm.SplitBox(&bm.initialBox);
+    lights.push_back(Light(Vector3(0, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f));
+    lights.push_back(Light(Vector3(1000, 0, 100), Vector3(1, 1, 1), 80000000.0f, 10.0f));
+    lights.push_back(Light(Vector3(512, 512, 100), Vector3(1, 1, 1), 100000000.0f, 20.0f));
+    lights.push_back(Light(Vector3(-1000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f));
+    lights.push_back(Light(Vector3(2000, 600, 1150), Vector3(1, 1, 1), 300000000.0f, 25.0f));
+    lights.push_back(Light(Vector3(1000, 800, 50), Vector3(0, 0, 1), 200000000.0f, 10.0f));
+    lights.push_back(Light(Vector3(0, 800, 50), Vector3(1, 0, 0), 200000000.0f, 10.0f));
+
+    //for (int i = 0; i < 10000; i++)
+    //{
+    //    float x = GetRandomFloatBetween(0, width);
+    //    float y = GetRandomFloatBetween(0, width);
+    //    float z = GetRandomFloatBetween(0, width);
+    //    float r = GetRandomFloatBetween(0, 1);
+    //    float g = GetRandomFloatBetween(0, 1);
+    //    float b = GetRandomFloatBetween(0, 1);
+    //    float rad = GetRandomFloatBetween(5, 8);
+    //    Sphere s = Sphere(Vector3(x, y, z), rad, Vector3(r, g, b), true);
+    //    spheres.push_back(s);
+    //}
+    //lights.push_back(Light(Vector3(width / 2, width / 2, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    //lights.push_back(Light(Vector3(width / 2, width / 2, width), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    //lights.push_back(Light(Vector3(0, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    //lights.push_back(Light(Vector3(width, 0, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    //lights.push_back(Light(Vector3(0, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+    //lights.push_back(Light(Vector3(width, width, 0), Vector3(1, 1, 1), 30000000.0f, 0.01f));
+
+    //bm.AddSpheresToInitialBox(spheres);
+    //bm.SplitBox(&bm.initialBox);
     //bm.DisplaySpheresOfBox(&bm.initialBox);
 
     //float t = 0;
